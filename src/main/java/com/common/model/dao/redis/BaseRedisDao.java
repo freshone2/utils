@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.SharingJedisCluster;
 
 import java.lang.annotation.Inherited;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,37 +22,10 @@ public class BaseRedisDao {
     protected static final Gson GSON = new Gson();
     public static final int MAX_RETRY_COUNT = 5;
 
-    private JedisPool redisPool;
+    private SharingJedisCluster sharingJedisCluster;
 
-    private ThreadLocal<Integer> retryCount = new ThreadLocal<>();
-
-    protected Jedis getRedis(int db){
-        return getRedis(redisPool,db);
-    }
-
-    private Jedis getRedis(JedisPool jedisPool , int db){
-        Jedis redis = null;
-        try {
-            redis = jedisPool.getResource();
-            redis.select(db);
-            retryCount.set(0);
-        }catch (Exception e){
-            e.printStackTrace();
-            if (redis != null){
-                redis.close();
-            }
-            Integer retryCountLocal = retryCount.get();
-            if (retryCountLocal == null){
-                retryCountLocal = new Integer(0);
-            }
-            if (++retryCountLocal> MAX_RETRY_COUNT){
-                retryCount.set(0);
-                return null;
-            }
-            retryCount.set(retryCountLocal);
-            return getRedis(jedisPool,db);
-        }
-        return redis;
+    protected SharingJedisCluster getRedis(){
+        return sharingJedisCluster;
     }
 
     protected String buildString(String separator,String... strings){
@@ -65,11 +39,11 @@ public class BaseRedisDao {
         return builder.toString();
     }
 
-    public JedisPool getRedisPool() {
-        return redisPool;
+    public SharingJedisCluster getSharingJedisCluster() {
+        return sharingJedisCluster;
     }
 
-    public void setRedisPool(JedisPool redisPool) {
-        this.redisPool = redisPool;
+    public void setSharingJedisCluster(SharingJedisCluster sharingJedisCluster) {
+        this.sharingJedisCluster = sharingJedisCluster;
     }
 }

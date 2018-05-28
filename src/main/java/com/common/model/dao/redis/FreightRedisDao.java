@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.SharingJedisCluster;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,19 +30,12 @@ public class FreightRedisDao extends BaseRedisDao {
      * @return
      */
     public FreightBo findFreight(String appCode){
-        Jedis redis = null;
-        try{
-            redis = getRedis(FREIGHT_DB);
-            String result = redis.hget(FREIGHT_KEY,appCode);
-            if (StringUtils.isBlank(result)){
-                return null;
-            }
-            return GSON.fromJson(result, FreightBo.class);
-        }finally {
-            if (null != redis){
-                redis.close();
-            }
+        SharingJedisCluster redis = getRedis();
+        String result = redis.hget(FREIGHT_KEY,appCode);
+        if (StringUtils.isBlank(result)){
+            return null;
         }
+        return GSON.fromJson(result, FreightBo.class);
     }
 
     /**
@@ -50,24 +44,17 @@ public class FreightRedisDao extends BaseRedisDao {
      * @return
      */
     public Map<String,FreightBo> findAllFreight(){
-        Jedis redis = null;
-        try{
-            redis = getRedis(FREIGHT_DB);
-            Map<String,String> result = redis.hgetAll(FREIGHT_KEY);
-            if (MapUtils.isEmpty(result)){
-                return null;
-            }
+         SharingJedisCluster redis = getRedis();
+         Map<String,String> result = redis.hgetAll(FREIGHT_KEY);
+         if (MapUtils.isEmpty(result)){
+             return null;
+         }
 
-            Map<String,FreightBo> freightBoMap = new HashMap<>(result.size());
-            for (Map.Entry<String,String> entry : result.entrySet()) {
-                freightBoMap.put(entry.getKey(),GSON.fromJson(entry.getValue(),FreightBo.class));
-            }
-            return freightBoMap;
-        }finally {
-            if (null != redis){
-                redis.close();
-            }
-        }
+         Map<String,FreightBo> freightBoMap = new HashMap<>(result.size());
+         for (Map.Entry<String,String> entry : result.entrySet()) {
+             freightBoMap.put(entry.getKey(),GSON.fromJson(entry.getValue(),FreightBo.class));
+         }
+         return freightBoMap;
     }
 
     /**
@@ -78,19 +65,12 @@ public class FreightRedisDao extends BaseRedisDao {
      * @return
      */
     public boolean upsertFreight(String appCode,FreightBo freightBo){
-        Jedis redis = null;
-        try{
-            redis = getRedis(FREIGHT_DB);
-            long result = redis.hset(FREIGHT_KEY,appCode,GSON.toJson(freightBo));
-            if (result<=0){
-                return false;
-            }
-            return true;
-        }finally {
-            if (null != redis){
-                redis.close();
-            }
-        }
+          SharingJedisCluster redis = getRedis();
+          long result = redis.hset(FREIGHT_KEY,appCode,GSON.toJson(freightBo));
+          if (result<=0){
+              return false;
+          }
+          return true;
     }
 
 }

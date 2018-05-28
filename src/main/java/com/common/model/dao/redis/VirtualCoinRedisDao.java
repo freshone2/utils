@@ -1,15 +1,15 @@
 package com.common.model.dao.redis;
 
 import com.common.model.bo.platform.RedisPlatformBo;
+import com.common.model.bo.redis.JedisClusterPipeline;
 import com.common.model.bo.virtualcoin.TimeSharingItem;
 import com.common.model.bo.virtualcoin.VirtualCoinSerialBo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Response;
-import redis.clients.jedis.Transaction;
+import redis.clients.jedis.*;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
@@ -24,6 +24,8 @@ import java.util.TreeMap;
  * @date: 2018/5/19 上午10:42
  */
 public class VirtualCoinRedisDao extends BaseRedisDao {
+    private static final Logger LOGGER = LoggerFactory.getLogger(VirtualCoinRedisDao.class);
+
     public static final int VIRTUAL_COIN_DB = 9;
 
     /**
@@ -36,85 +38,77 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
      */
     public static final String USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX = "u:v:s";
 
-    @Autowired
-    private AssemblyRedisDao assemblyRedisDao;
-
     public double findUserVirtualCoin(String userId,String appCode){
-        Jedis redis = getRedis(VIRTUAL_COIN_DB);
-        try{
-            String numString = redis.get(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX,appCode,userId));
-            return NumberUtils.toDouble(numString,0);
-        }finally {
-            if (redis != null ){
-                redis.close();
-            }
-        }
+        SharingJedisCluster redis = getRedis();
+
+        String numString = redis.get(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX,appCode,userId));
+        return NumberUtils.toDouble(numString,0);
     }
 
     public Map<String,String> findSharingVirtualCoin(String userId,String appCode){
-        Jedis redis = getRedis(VIRTUAL_COIN_DB);
-        try{
-            Map<String,String> response = redis.hgetAll(buildString(":"
-                    ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId));
-            return response;
-        }finally {
-            if (redis != null ){
-                redis.close();
-            }
-        }
+        SharingJedisCluster redis = getRedis();
+        Map<String,String> response = redis.hgetAll(buildString(":"
+                ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId));
+        return response;
     }
 
     public boolean distributeVirtualCoin(String userId,String appCode
             ,double addVirtualCoin,Long timeout){
-        Jedis redis = getRedis(VIRTUAL_COIN_DB);
+        SharingJedisCluster redis = getRedis();
+        JedisClusterPipeline pipeline = null;
         try{
-            Transaction transaction = redis.multi();
-            transaction.incrByFloat(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX
+            pipeline = redis.pipelined();
+            pipeline.incrByFloat(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX
                     ,appCode,userId),addVirtualCoin);
-            transaction.hincrByFloat(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX
+            pipeline.hincrByFloat(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX
                     ,appCode,userId),timeout.toString(),addVirtualCoin);
-            List<Object> result = transaction.exec();
+            List<Object> result = pipeline.syncAndReturnAll();
             if (CollectionUtils.isEmpty(result)){
                 return false;
             }
             return true;
-        }finally {
-            if (redis != null ){
-                redis.close();
+        }catch (Exception e){
+            LOGGER.error("错误:{}",e);
+            if (pipeline != null ){
+                pipeline.close();
             }
         }
+        return false;
     }
 
     public boolean distributeVirtualCoins(List<String> userIds,String appCode
             ,double addVirtualCoin,Long timeout){
-        Jedis redis = getRedis(VIRTUAL_COIN_DB);
+        SharingJedisCluster redis = getRedis();
+        JedisClusterPipeline pipeline = null;
         try{
-            Transaction transaction = redis.multi();
+            pipeline = redis.pipelined();
             for (String userId : userIds){
-                transaction.incrByFloat(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX
+                pipeline.incrByFloat(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX
                         ,appCode,userId),addVirtualCoin);
-                transaction.hincrByFloat(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX
+                pipeline.hincrByFloat(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX
                         ,appCode,userId),timeout.toString(),addVirtualCoin);
             }
-            List<Object> result = transaction.exec();
+            List<Object> result = pipeline.syncAndReturnAll();
             if (CollectionUtils.isEmpty(result)){
                 return false;
             }
             return true;
-        }finally {
-            if (redis != null ){
-                redis.close();
+        }catch (Exception e){
+            LOGGER.error("错误:{}",e);
+            if (pipeline != null ){
+                pipeline.close();
             }
         }
+        return false;
     }
 
     public List<TimeSharingItem> usedVirtualCoin(String userId,String appCode,double usedVirtualCoin){
-        Jedis redis = getRedis(VIRTUAL_COIN_DB);
+        SharingJedisCluster redis = getRedis();
         String lockKey = buildString(AssemblyRedisDao.LOCK_SPLIT_CODE,AssemblyRedisDao.VIRTUAL_COIN_LOCK,userId);
         String lockValue = String.valueOf(System.currentTimeMillis());
-        try{
-            assemblyRedisDao.lock(lockKey,lockValue);
-            Pipeline pipeline = redis.pipelined();
+        JedisClusterPipeline pipeline = null;
+            redis.lock(lockKey,lockValue);
+            pipeline = redis.pipelined();
             Response<String> totalResponse = pipeline.get(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX
                     ,appCode,userId));
             Response<Map<String,String>> timeSharingResponse = pipeline.hgetAll(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX
@@ -154,32 +148,27 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
                     break;
                 }
             }
-            Transaction transaction = redis.multi();
-            transaction.incrByFloat(buildString(":"
+            pipeline = redis.pipelined();
+            pipeline.incrByFloat(buildString(":"
                     ,USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX,appCode,userId),-usedVirtualCoin);
-            transaction.del(buildString(":"
+            pipeline.del(buildString(":"
                     ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId));
-            transaction.hmset(buildString(":"
+            pipeline.hmset(buildString(":"
                     ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId),timeSharingStringMap);
-            List<Object> result = transaction.exec();
+            List<Object> result = pipeline.syncAndReturnAll();
             if (CollectionUtils.isEmpty(result)){
                 return null;
             }
             return timeSharingItemList;
-        }finally {
-            assemblyRedisDao.unlock(lockKey,lockValue);
-            if (redis != null ){
-                redis.close();
-            }
-        }
     }
 
     public TimeSharingItem removeExpireVirtualCoin(String userId,String appCode){
-        Jedis redis = getRedis(VIRTUAL_COIN_DB);
+        SharingJedisCluster redis = getRedis();
         String lockKey = buildString(AssemblyRedisDao.LOCK_SPLIT_CODE,AssemblyRedisDao.VIRTUAL_COIN_LOCK,userId);
         String lockValue = String.valueOf(System.currentTimeMillis());
+        JedisClusterPipeline pipeline = null;
         try{
-            assemblyRedisDao.lock(lockKey,lockValue);
+            redis.lock(lockKey,lockValue);
             Map<String,String> timeSharingStringMap = redis.hgetAll(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX
                     ,appCode,userId));
             TreeMap<Long,Double> timeSharingMap = new TreeMap<>();
@@ -187,12 +176,12 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
                 timeSharingMap.put(NumberUtils.toLong(entry.getKey()),NumberUtils.toDouble(entry.getValue()));
             }
 
-            Transaction transaction = redis.multi();
-            transaction.incrByFloat(buildString(":"
+            pipeline = redis.pipelined();
+            pipeline.incrByFloat(buildString(":"
                     ,USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX,appCode,userId),timeSharingMap.firstEntry().getValue());
-            transaction.hdel(buildString(":"
+            pipeline.hdel(buildString(":"
                     ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId),timeSharingMap.firstEntry().toString());
-            List<Object> result = transaction.exec();
+            List<Object> result = pipeline.syncAndReturnAll();
             if (CollectionUtils.isEmpty(result)){
                 return null;
             }
@@ -200,49 +189,37 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
             timeSharingItem.setTimeout(timeSharingMap.firstEntry().getKey());
             timeSharingItem.setVirtualCoin(timeSharingMap.firstEntry().getValue());
             return timeSharingItem;
-        }finally {
-            assemblyRedisDao.unlock(lockKey,lockValue);
-            if (redis != null ){
-                redis.close();
+        }catch (Exception e){
+            LOGGER.error("错误:{}",e);
+            if (pipeline != null ){
+                pipeline.close();
             }
+            return null;
+        }finally {
+            redis.unlock(lockKey,lockValue);
         }
     }
 
     public boolean restorationVirtualCoin(String userId,String appCode,List<TimeSharingItem> sharingItemList){
-        Jedis redis = getRedis(VIRTUAL_COIN_DB);
-        try{
-            long nowTime = System.currentTimeMillis();
-            Transaction transaction = redis.multi();
-            BigDecimal restorationCoin = BigDecimal.ZERO;
-            for (TimeSharingItem timeSharingItem : sharingItemList){
-                if (nowTime >= timeSharingItem.getTimeout()){
-                    continue;
-                }
-                restorationCoin = restorationCoin.add(BigDecimal.valueOf(timeSharingItem.getVirtualCoin()));
-                transaction.hincrByFloat(buildString(":"
-                        ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId)
-                        ,timeSharingItem.getTimeout().toString(),timeSharingItem.getVirtualCoin());
+        SharingJedisCluster redis = getRedis();
+        long nowTime = System.currentTimeMillis();
+        JedisClusterPipeline pipeline = redis.pipelined();
+        BigDecimal restorationCoin = BigDecimal.ZERO;
+        for (TimeSharingItem timeSharingItem : sharingItemList){
+            if (nowTime >= timeSharingItem.getTimeout()){
+                continue;
             }
-            transaction.incrByFloat(buildString(":"
-                    ,USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX,appCode,userId),restorationCoin.doubleValue());
-            List<Object> result = transaction.exec();
-            if (CollectionUtils.isEmpty(result)){
-                return false;
-            }
-            return true;
-        }finally {
-            if (redis != null ){
-                redis.close();
-            }
+            restorationCoin = restorationCoin.add(BigDecimal.valueOf(timeSharingItem.getVirtualCoin()));
+            pipeline.hincrByFloat(buildString(":"
+                    ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId)
+                    ,timeSharingItem.getTimeout().toString(),timeSharingItem.getVirtualCoin());
         }
-    }
-
-
-    public AssemblyRedisDao getAssemblyRedisDao() {
-        return assemblyRedisDao;
-    }
-
-    public void setAssemblyRedisDao(AssemblyRedisDao assemblyRedisDao) {
-        this.assemblyRedisDao = assemblyRedisDao;
+        pipeline.incrByFloat(buildString(":"
+                ,USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX,appCode,userId),restorationCoin.doubleValue());
+        List<Object> result = pipeline.syncAndReturnAll();
+        if (CollectionUtils.isEmpty(result)){
+            return false;
+        }
+        return true;
     }
 }

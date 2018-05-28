@@ -7,12 +7,16 @@ import com.common.model.bo.coupon.RedisActivityCouponBo;
 import com.common.model.bo.order.HashMapList;
 import com.common.model.bo.platform.PlatformContentBo;
 import com.common.model.bo.platform.RedisPlatformBo;
+import com.common.model.bo.redis.JedisClusterPipeline;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Response;
+import redis.clients.jedis.SharingJedisCluster;
 import redis.clients.jedis.Transaction;
 
 import java.util.*;
@@ -24,6 +28,7 @@ import java.util.*;
  * @date: 2018/5/14 下午2:51
  */
 public class ActivityRedisDao extends BaseRedisDao {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActivityRedisDao.class);
 
     public static final int ACTIVITY_DB = 5;
 
@@ -177,18 +182,12 @@ public class ActivityRedisDao extends BaseRedisDao {
      * @return
      */
     public  RedisActivityCouponBo findRedisCouponBo(String appCode, Integer activityId){
-        Jedis redis = getRedis(ACTIVITY_DB);
-        try{
-            Map<String,String> redisActivityCouponBo = redis.hgetAll(buildString(":",COUPON_PREFIX,appCode,activityId.toString()));
-            if (MapUtils.isEmpty(redisActivityCouponBo)){
-                return null;
-            }
-            return new RedisActivityCouponBo(redisActivityCouponBo);
-        }finally {
-            if (redis != null ){
-                redis.close();
-            }
+        SharingJedisCluster redis = getRedis();
+        Map<String,String> redisActivityCouponBo = redis.hgetAll(buildString(":",COUPON_PREFIX,appCode,activityId.toString()));
+        if (MapUtils.isEmpty(redisActivityCouponBo)){
+            return null;
         }
+        return new RedisActivityCouponBo(redisActivityCouponBo);
     }
 
     /**
@@ -199,19 +198,13 @@ public class ActivityRedisDao extends BaseRedisDao {
      * @return
      */
     public  RedisPlatformBo findRedisPlatformBo(String appCode, Integer activityId){
-        Jedis redis = getRedis(ACTIVITY_DB);
-        try{
-            Map<String,String> redisPlatformBo = redis.hgetAll(buildString(":",PLATFORM_PREFIX
-                    ,appCode,activityId.toString()));
-            if (MapUtils.isEmpty(redisPlatformBo)){
-                return null;
-            }
-            return new RedisPlatformBo(redisPlatformBo);
-        }finally {
-            if (redis != null ){
-                redis.close();
-            }
+        SharingJedisCluster redis = getRedis();
+        Map<String,String> redisPlatformBo = redis.hgetAll(buildString(":",PLATFORM_PREFIX
+                ,appCode,activityId.toString()));
+        if (MapUtils.isEmpty(redisPlatformBo)){
+            return null;
         }
+        return new RedisPlatformBo(redisPlatformBo);
     }
 
     /**
@@ -224,12 +217,12 @@ public class ActivityRedisDao extends BaseRedisDao {
      * @return
      */
     public List<Object> findCouponBoAndSpecId(String appCode, Integer activityId){
-        Jedis redis = getRedis(ACTIVITY_DB);
+        SharingJedisCluster redis = getRedis();
+        JedisClusterPipeline pipeline = redis.pipelined();
         try{
-            Transaction transaction = redis.multi();
-            transaction.hget(buildString(":",COUPON_PREFIX,appCode,activityId.toString()),RedisActivityCouponBo.CONTENT);
-            transaction.smembers(buildString(":",ACTIVITY_SPECIFICATION_PREFIX,appCode,activityId.toString()));
-            List<Object> response = transaction.exec();
+            pipeline.hget(buildString(":",COUPON_PREFIX,appCode,activityId.toString()),RedisActivityCouponBo.CONTENT);
+            pipeline.smembers(buildString(":",ACTIVITY_SPECIFICATION_PREFIX,appCode,activityId.toString()));
+            List<Object> response = pipeline.syncAndReturnAll();
             if (CollectionUtils.isEmpty(response)){
                 return null;
             }
@@ -242,10 +235,12 @@ public class ActivityRedisDao extends BaseRedisDao {
             }
             result.add(response.get(1));
             return result;
-        }finally {
-            if (redis != null ){
-                redis.close();
+        }catch (Exception e){
+            LOGGER.error("错误：{}",e);
+            if (pipeline != null) {
+                pipeline.close();
             }
+            return null;
         }
     }
 
@@ -259,12 +254,12 @@ public class ActivityRedisDao extends BaseRedisDao {
      * @return
      */
     public List<Object> findPlatformBoAndSpecId(String appCode, Integer activityId){
-        Jedis redis = getRedis(ACTIVITY_DB);
+        SharingJedisCluster redis = getRedis();
+        JedisClusterPipeline pipeline = redis.pipelined();
         try{
-            Transaction transaction = redis.multi();
-            transaction.hget(buildString(":",PLATFORM_PREFIX,appCode,activityId.toString()),RedisPlatformBo.CONTENT);
-            transaction.smembers(buildString(":",ACTIVITY_SPECIFICATION_PREFIX,appCode,activityId.toString()));
-            List<Object> response = transaction.exec();
+            pipeline.hget(buildString(":",PLATFORM_PREFIX,appCode,activityId.toString()),RedisPlatformBo.CONTENT);
+            pipeline.smembers(buildString(":",ACTIVITY_SPECIFICATION_PREFIX,appCode,activityId.toString()));
+            List<Object> response = pipeline.syncAndReturnAll();
             if (CollectionUtils.isEmpty(response)){
                 return null;
             }
@@ -277,10 +272,12 @@ public class ActivityRedisDao extends BaseRedisDao {
             }
             result.add(response.get(1));
             return result;
-        }finally {
-            if (redis != null ){
-                redis.close();
+        }catch (Exception e){
+            LOGGER.error("错误：{}",e);
+            if (pipeline != null) {
+                pipeline.close();
             }
+            return null;
         }
     }
 
@@ -293,14 +290,14 @@ public class ActivityRedisDao extends BaseRedisDao {
      * @return
      */
     public Map<Integer,Boolean> existSpecIds(String appCode, Integer activityId, Integer... specIds){
-        Jedis redis = getRedis(ACTIVITY_DB);
+        SharingJedisCluster redis = getRedis();
+        JedisClusterPipeline pipeline = redis.pipelined();
         try{
-            Transaction transaction = redis.multi();
             for (Integer specId : specIds) {
-                transaction.sismember(buildString(":", ACTIVITY_SPECIFICATION_PREFIX
+                pipeline.sismember(buildString(":", ACTIVITY_SPECIFICATION_PREFIX
                         , appCode, activityId.toString()),specId.toString());
             }
-            List<Object> response = transaction.exec();
+            List<Object> response = pipeline.syncAndReturnAll();
             if (CollectionUtils.isEmpty(response)){
                 return null;
             }
@@ -309,10 +306,12 @@ public class ActivityRedisDao extends BaseRedisDao {
                 result.put( specIds[i] , (Boolean) response.get(i) );
             }
             return result;
-        }finally {
-            if (redis != null ){
-                redis.close();
+        }catch (Exception e){
+            LOGGER.error("错误：{}",e);
+            if (pipeline != null) {
+                pipeline.close();
             }
+            return null;
         }
     }
 
@@ -324,21 +323,20 @@ public class ActivityRedisDao extends BaseRedisDao {
      * @return
      */
     public Map< Integer , Map<Integer,Boolean> > existActivitySpecIds(String appCode, Map<Integer,List<Integer>> activityMap){
-        Jedis redis = getRedis(ACTIVITY_DB);
+        SharingJedisCluster redis = getRedis();
+        JedisClusterPipeline pipeline = redis.pipelined();
         try{
             Map<Integer,Map<Integer,Response<Boolean>>> responseMap = new HashMap<>(activityMap.size());
-
-            Transaction transaction = redis.multi();
             for (Map.Entry<Integer , List<Integer> > entry : activityMap.entrySet() ){
                 Map<Integer,Response<Boolean>> item = new HashMap<>(entry.getValue().size());
                 responseMap.put(entry.getKey(),item);
                 for (Integer specId : entry.getValue()) {
-                    Response<Boolean> response = transaction.sismember(buildString(":", ACTIVITY_SPECIFICATION_PREFIX
+                    Response<Boolean> response = pipeline.sismember(buildString(":", ACTIVITY_SPECIFICATION_PREFIX
                             , appCode, entry.getKey().toString()), specId.toString());
                     item.put(specId,response);
                 }
             }
-            transaction.exec();
+            pipeline.sync();
 
             Map<Integer,Map<Integer,Boolean>> result = new HashMap<>(responseMap.size());
             for (Map.Entry<Integer , Map<Integer,Response<Boolean>> > entry
@@ -356,10 +354,12 @@ public class ActivityRedisDao extends BaseRedisDao {
             }
 
             return result;
-        }finally {
-            if (redis != null ){
-                redis.close();
+        }catch (Exception e){
+            LOGGER.error("错误：{}",e);
+            if (pipeline != null) {
+                pipeline.close();
             }
+            return null;
         }
     }
 
@@ -373,93 +373,94 @@ public class ActivityRedisDao extends BaseRedisDao {
      * @return
      */
     public boolean incrementCouponFields(String appCode , Integer activityId ,int num,String... fields ){
-        Jedis redis = getRedis(ACTIVITY_DB);
+        SharingJedisCluster redis = getRedis();
+        JedisClusterPipeline pipeline = redis.pipelined();
         try{
-            Transaction transaction = redis.multi();
             for (String field : fields) {
-                transaction.hincrBy(buildString(":", COUPON_PREFIX, appCode, activityId.toString()),field, num);
+                pipeline.hincrBy(buildString(":", COUPON_PREFIX, appCode, activityId.toString()),field, num);
             }
-            List<Object> result = transaction.exec();
+            List<Object> result = pipeline.syncAndReturnAll();
             if (CollectionUtils.isEmpty(result)){
                 return false;
             }
             return true;
-        }finally {
-            if (redis != null ){
-                redis.close();
+        }catch (Exception e){
+            LOGGER.error("错误：{}",e);
+            if (pipeline != null) {
+                pipeline.close();
             }
+            return false;
         }
     }
 
     private boolean upsertActivityBo(String appCode, Integer activityId,String activityPrefix
             ,String onlinePrefix, Map<String,String> activityBo , List<String> specIds){
-        Jedis redis = getRedis(ACTIVITY_DB);
+        if (CollectionUtils.isEmpty(specIds)){
+            return false;
+        }
+
+        SharingJedisCluster redis = getRedis();
+        JedisClusterPipeline pipeline = redis.pipelined();
         try{
-            if (CollectionUtils.isEmpty(specIds)){
-                return false;
-            }
-            Transaction transaction = redis.multi();
-            transaction.hmset(buildString(":",activityPrefix,appCode,activityId.toString()),activityBo);
-            transaction.del(buildString(":",ACTIVITY_SPECIFICATION_PREFIX,appCode,activityId.toString()));
-            transaction.sadd(buildString(":",ACTIVITY_SPECIFICATION_PREFIX,appCode,activityId.toString()),specIds.toArray(new String[specIds.size()]));
+            pipeline.hmset(buildString(":",activityPrefix,appCode,activityId.toString()),activityBo);
+            pipeline.del(buildString(":",ACTIVITY_SPECIFICATION_PREFIX,appCode,activityId.toString()));
+            pipeline.sadd(buildString(":",ACTIVITY_SPECIFICATION_PREFIX,appCode,activityId.toString()),specIds.toArray(new String[specIds.size()]));
             for (String specId : specIds){
-                transaction.sadd(buildString(":",SPECIFICATION_ACTIVITY_PREFIX,appCode,specId.toString())
+                pipeline.sadd(buildString(":",SPECIFICATION_ACTIVITY_PREFIX,appCode,specId.toString())
                         ,buildString(":",activityPrefix,appCode,activityId.toString()));
             }
-            transaction.sadd(buildString(":",onlinePrefix,appCode)
+            pipeline.sadd(buildString(":",onlinePrefix,appCode)
                     ,buildString(":",activityPrefix,appCode,activityId.toString()));
-            List<Object> response = transaction.exec();
+            List<Object> response = pipeline.syncAndReturnAll();
             if (CollectionUtils.isEmpty(response)){
                 return false;
             }
             return true;
-        }finally {
-            if (redis != null ){
-                redis.close();
+        }catch (Exception e){
+            LOGGER.error("错误：{}",e);
+            if (pipeline != null) {
+                pipeline.close();
             }
+            return false;
         }
     }
 
     private boolean offlineActivityBo(String appCode,Integer activityId
             ,String activityPrefix
             ,String onlinePrefix ){
-        Jedis redis = getRedis(ACTIVITY_DB);
+        SharingJedisCluster redis = getRedis();
+        String activityKey = buildString(":",ACTIVITY_SPECIFICATION_PREFIX,appCode,activityId.toString());
+        Set<String> specSet = redis.smembers(activityKey);
+        JedisClusterPipeline pipeline = redis.pipelined();
         try{
-            String activityKey = buildString(":",ACTIVITY_SPECIFICATION_PREFIX,appCode,activityId.toString());
-            Set<String> specSet = redis.smembers(activityKey);
-            Transaction transaction = redis.multi();
-            transaction.srem(buildString(":",onlinePrefix,appCode)
+            pipeline.srem(buildString(":",onlinePrefix,appCode)
                     ,buildString(":",activityPrefix,appCode,activityId.toString()));
             for (String specString : specSet){
-                transaction.srem(buildString(":",SPECIFICATION_ACTIVITY_PREFIX,appCode,specString)
+                pipeline.srem(buildString(":",SPECIFICATION_ACTIVITY_PREFIX,appCode,specString)
                         ,activityKey);
             }
-            List<Object> result = transaction.exec();
+            List<Object> result = pipeline.syncAndReturnAll();
             if (CollectionUtils.isEmpty(result)){
                 return false;
             }
             return true;
-        }finally {
-            if (redis != null ){
-                redis.close();
+        }catch (Exception e){
+            LOGGER.error("错误：{}",e);
+            if (pipeline != null) {
+                pipeline.close();
             }
+            return false;
         }
     }
 
     private  <T> T findActivityBo(String appCode, Integer activityId
             ,String activityPrefix ,Class<T> tClass){
-        Jedis redis = getRedis(ACTIVITY_DB);
-        try{
-            String content = redis.hget(buildString(":",activityPrefix,appCode,activityId.toString()),RedisActivityCouponBo.CONTENT);
-            if (StringUtils.isEmpty(content)){
-                return null;
-            }
-            return GSON.fromJson(content,tClass);
-        }finally {
-            if (redis != null ){
-                redis.close();
-            }
+        SharingJedisCluster redis = getRedis();
+        String content = redis.hget(buildString(":",activityPrefix,appCode,activityId.toString()),RedisActivityCouponBo.CONTENT);
+        if (StringUtils.isEmpty(content)){
+            return null;
         }
+        return GSON.fromJson(content,tClass);
     }
 
 
