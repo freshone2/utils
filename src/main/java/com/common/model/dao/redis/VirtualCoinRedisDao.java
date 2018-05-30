@@ -4,7 +4,10 @@ import com.common.model.bo.platform.RedisPlatformBo;
 import com.common.model.bo.virtualcoin.TimeSharingItem;
 import com.common.model.bo.virtualcoin.VirtualCoinSerialBo;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
@@ -24,6 +27,7 @@ import java.util.TreeMap;
  * @date: 2018/5/19 上午10:42
  */
 public class VirtualCoinRedisDao extends BaseRedisDao {
+    private static final Logger LOGGER = LoggerFactory.getLogger(VirtualCoinRedisDao.class);
     public static final int VIRTUAL_COIN_DB = 9;
 
     /**
@@ -182,24 +186,29 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
             assemblyRedisDao.lock(lockKey,lockValue);
             Map<String,String> timeSharingStringMap = redis.hgetAll(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX
                     ,appCode,userId));
+            if (MapUtils.isEmpty(timeSharingStringMap)){
+                return null;
+            }
             TreeMap<Long,Double> timeSharingMap = new TreeMap<>();
             for (Map.Entry<String,String> entry : timeSharingStringMap.entrySet()){
                 timeSharingMap.put(NumberUtils.toLong(entry.getKey()),NumberUtils.toDouble(entry.getValue()));
             }
-
-            Transaction transaction = redis.multi();
-            transaction.incrByFloat(buildString(":"
-                    ,USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX,appCode,userId),timeSharingMap.firstEntry().getValue());
-            transaction.hdel(buildString(":"
-                    ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId),timeSharingMap.firstEntry().toString());
-            List<Object> result = transaction.exec();
-            if (CollectionUtils.isEmpty(result)){
-                return null;
+            if (System.currentTimeMillis()>=timeSharingMap.firstEntry().getKey()) {
+                Transaction transaction = redis.multi();
+                transaction.incrByFloat(buildString(":"
+                        , USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX, appCode, userId), -timeSharingMap.firstEntry().getValue());
+                transaction.hdel(buildString(":"
+                        , USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX, appCode, userId), timeSharingMap.firstEntry().getKey().toString());
+                List<Object> result = transaction.exec();
+                if (CollectionUtils.isEmpty(result)) {
+                    return null;
+                }
+                TimeSharingItem timeSharingItem = new TimeSharingItem();
+                timeSharingItem.setTimeout(timeSharingMap.firstEntry().getKey());
+                timeSharingItem.setVirtualCoin(timeSharingMap.firstEntry().getValue());
+                return timeSharingItem;
             }
-            TimeSharingItem timeSharingItem = new TimeSharingItem();
-            timeSharingItem.setTimeout(timeSharingMap.firstEntry().getKey());
-            timeSharingItem.setVirtualCoin(timeSharingMap.firstEntry().getValue());
-            return timeSharingItem;
+            return null;
         }finally {
             assemblyRedisDao.unlock(lockKey,lockValue);
             if (redis != null ){
@@ -219,6 +228,7 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
                     continue;
                 }
                 restorationCoin = restorationCoin.add(BigDecimal.valueOf(timeSharingItem.getVirtualCoin()));
+                LOGGER.info("累加返还金额：{}",restorationCoin.doubleValue());
                 transaction.hincrByFloat(buildString(":"
                         ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId)
                         ,timeSharingItem.getTimeout().toString(),timeSharingItem.getVirtualCoin());
