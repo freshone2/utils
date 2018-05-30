@@ -5,6 +5,7 @@ import com.common.model.bo.redis.JedisClusterPipeline;
 import com.common.model.bo.virtualcoin.TimeSharingItem;
 import com.common.model.bo.virtualcoin.VirtualCoinSerialBo;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,55 +172,65 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
             redis.lock(lockKey,lockValue);
             Map<String,String> timeSharingStringMap = redis.hgetAll(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX
                     ,appCode,userId));
+            if (MapUtils.isEmpty(timeSharingStringMap)){
+                return null;
+            }
             TreeMap<Long,Double> timeSharingMap = new TreeMap<>();
             for (Map.Entry<String,String> entry : timeSharingStringMap.entrySet()){
                 timeSharingMap.put(NumberUtils.toLong(entry.getKey()),NumberUtils.toDouble(entry.getValue()));
             }
-
-            pipeline = redis.pipelined();
-            pipeline.incrByFloat(buildString(":"
-                    ,USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX,appCode,userId),timeSharingMap.firstEntry().getValue());
-            pipeline.hdel(buildString(":"
-                    ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId),timeSharingMap.firstEntry().toString());
-            List<Object> result = pipeline.syncAndReturnAll();
-            if (CollectionUtils.isEmpty(result)){
-                return null;
-            }
-            TimeSharingItem timeSharingItem = new TimeSharingItem();
-            timeSharingItem.setTimeout(timeSharingMap.firstEntry().getKey());
-            timeSharingItem.setVirtualCoin(timeSharingMap.firstEntry().getValue());
-            return timeSharingItem;
-        }catch (Exception e){
-            LOGGER.error("错误:{}",e);
-            if (pipeline != null ){
-                pipeline.close();
+            if (System.currentTimeMillis()>=timeSharingMap.firstEntry().getKey()) {
+                pipeline= redis.pipelined();
+                pipeline.incrByFloat(buildString(":"
+                        , USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX, appCode, userId), -timeSharingMap.firstEntry().getValue());
+                pipeline.hdel(buildString(":"
+                        , USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX, appCode, userId), timeSharingMap.firstEntry().getKey().toString());
+                List<Object> result = pipeline.syncAndReturnAll();
+                if (CollectionUtils.isEmpty(result)) {
+                    return null;
+                }
+                TimeSharingItem timeSharingItem = new TimeSharingItem();
+                timeSharingItem.setTimeout(timeSharingMap.firstEntry().getKey());
+                timeSharingItem.setVirtualCoin(timeSharingMap.firstEntry().getValue());
+                return timeSharingItem;
             }
             return null;
         }finally {
             redis.unlock(lockKey,lockValue);
+            if (pipeline != null ){
+                pipeline.close();
+            }
         }
     }
 
     public boolean restorationVirtualCoin(String userId,String appCode,List<TimeSharingItem> sharingItemList){
         SharingJedisCluster redis = getRedis();
-        long nowTime = System.currentTimeMillis();
-        JedisClusterPipeline pipeline = redis.pipelined();
-        BigDecimal restorationCoin = BigDecimal.ZERO;
-        for (TimeSharingItem timeSharingItem : sharingItemList){
-            if (nowTime >= timeSharingItem.getTimeout()){
-                continue;
+        JedisClusterPipeline pipeline = null;
+        try{
+            long nowTime = System.currentTimeMillis();
+            pipeline = redis.pipelined();
+            BigDecimal restorationCoin = BigDecimal.ZERO;
+            for (TimeSharingItem timeSharingItem : sharingItemList){
+                if (nowTime >= timeSharingItem.getTimeout()){
+                    continue;
+                }
+                restorationCoin = restorationCoin.add(BigDecimal.valueOf(timeSharingItem.getVirtualCoin()));
+                LOGGER.info("累加返还金额：{}",restorationCoin.doubleValue());
+                pipeline.hincrByFloat(buildString(":"
+                        ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId)
+                        ,timeSharingItem.getTimeout().toString(),timeSharingItem.getVirtualCoin());
             }
-            restorationCoin = restorationCoin.add(BigDecimal.valueOf(timeSharingItem.getVirtualCoin()));
-            pipeline.hincrByFloat(buildString(":"
-                    ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId)
-                    ,timeSharingItem.getTimeout().toString(),timeSharingItem.getVirtualCoin());
+            pipeline.incrByFloat(buildString(":"
+                    ,USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX,appCode,userId),restorationCoin.doubleValue());
+            List<Object> result = pipeline.syncAndReturnAll();
+            if (CollectionUtils.isEmpty(result)){
+                return false;
+            }
+            return true;
+        }finally {
+            if (pipeline != null ){
+                pipeline.close();
+            }
         }
-        pipeline.incrByFloat(buildString(":"
-                ,USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX,appCode,userId),restorationCoin.doubleValue());
-        List<Object> result = pipeline.syncAndReturnAll();
-        if (CollectionUtils.isEmpty(result)){
-            return false;
-        }
-        return true;
     }
 }
