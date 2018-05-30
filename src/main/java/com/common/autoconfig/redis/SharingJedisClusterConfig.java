@@ -1,9 +1,13 @@
 package com.common.autoconfig.redis;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.HostAndPort;
@@ -25,39 +29,47 @@ import java.util.Set;
 @ConditionalOnClass(JedisCluster.class)
 @ConditionalOnProperty(prefix = "utils.redis",value = "enable",havingValue = "true")
 public class SharingJedisClusterConfig {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SharingJedisClusterConfig.class);
 
-    @Value("nodes")
+    @Value("${utils.redis.nodes:}")
     private Set<String> nodes;
 
-    @Value("timeout:1000")
+    @Value("${utils.redis.timeout:1000}")
     private int timeout;
 
-    @Value("maxAttempts:2000")
+    @Value("${utils.redis.maxAttempts:2000}")
     private int maxAttempts;
 
-    @Value("maxIdle:8")
+    @Value("${utils.redis.maxIdle:8}")
     private int maxIdle;
 
-    @Value("minIdle:0")
+    @Value("${utils.redis.minIdle:0}")
     private int minIdle;
 
-    @Value("maxTotal:8")
+    @Value("${utils.redis.maxTotal:8}")
     private int maxTotal;
 
-    @Value("maxWaitMills:10000")
+    @Value("${utils.redis.maxWaitMills:10000}")
     private long maxWaitMills;
 
-    @Value("testOnBorrow:true")
+    @Value("${utils.redis.testOnBorrow:true}")
     private boolean testOnBorrow;
 
-    @Value("testOnCreate:true")
+    @Value("${utils.redis.testOnCreate:true}")
     private boolean testOnCreate;
 
-    @Value("testWhileIdle:true")
+    @Value("${utils.redis.testWhileIdle:true}")
     private boolean testWhileIdle;
+
+    @Value("${utils.redis.password:}")
+    private String password;
+
+    @Value("${utils.redis.connectionTimeout:1000}")
+    private int connectionTimeout;
 
     @Bean
     public SharingJedisCluster createdSharingJedisCluster(){
+        LOGGER.info("{},{}",timeout,maxAttempts);
         if (CollectionUtils.isEmpty(nodes)){
             throw new NullPointerException();
         }
@@ -75,7 +87,11 @@ public class SharingJedisClusterConfig {
         jedisPoolConfig.setTestOnBorrow(testOnBorrow);
         jedisPoolConfig.setTestOnCreate(testOnCreate);
         jedisPoolConfig.setTestWhileIdle(testWhileIdle);
-        SharingJedisCluster cluster = new SharingJedisCluster(nodeSet,timeout,maxAttempts,jedisPoolConfig);
+        SharingJedisCluster cluster = null;
+        if ( StringUtils.isNotBlank(password)){
+            cluster = new SharingJedisCluster(nodeSet,connectionTimeout,timeout,maxAttempts,password,jedisPoolConfig);
+        }
+        cluster = new SharingJedisCluster(nodeSet,connectionTimeout,timeout,maxAttempts,jedisPoolConfig);
         return cluster;
     }
 }

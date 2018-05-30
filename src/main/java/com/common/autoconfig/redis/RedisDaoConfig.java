@@ -18,8 +18,6 @@ import redis.clients.jedis.SharingJedisCluster;
  * @date: 2018/5/25 下午1:56
  */
 @Configuration
-@ConditionalOnClass(SharingJedisCluster.class)
-@ConditionalOnBean(SharingJedisCluster.class)
 public class RedisDaoConfig {
 
     @Bean
