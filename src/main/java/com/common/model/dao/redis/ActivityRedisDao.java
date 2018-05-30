@@ -416,8 +416,7 @@ public class ActivityRedisDao extends BaseRedisDao {
                 return false;
             }
             return true;
-        }catch (Exception e){
-            LOGGER.error("错误：{}",e);
+        }finally {
             if (pipeline != null) {
                 pipeline.close();
             }
@@ -444,8 +443,7 @@ public class ActivityRedisDao extends BaseRedisDao {
                 return false;
             }
             return true;
-        }catch (Exception e){
-            LOGGER.error("错误：{}",e);
+        }finally {
             if (pipeline != null) {
                 pipeline.close();
             }

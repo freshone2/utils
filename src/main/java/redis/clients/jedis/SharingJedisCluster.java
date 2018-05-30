@@ -85,6 +85,7 @@ public class SharingJedisCluster extends JedisCluster {
 
     public JedisClusterPipeline pipelined(){
         JedisClusterPipeline pipeline = new JedisClusterPipeline();
+        pipeline.refreshCluster();
         pipeline.setJedisCluster(this);
         return pipeline;
     }

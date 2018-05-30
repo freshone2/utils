@@ -68,13 +68,11 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
                 return false;
             }
             return true;
-        }catch (Exception e){
-            LOGGER.error("错误:{}",e);
-            if (pipeline != null ){
+        } finally {
+            if (pipeline != null) {
                 pipeline.close();
             }
         }
-        return false;
     }
 
     public boolean distributeVirtualCoins(List<String> userIds,String appCode
@@ -94,13 +92,11 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
                 return false;
             }
             return true;
-        }catch (Exception e){
-            LOGGER.error("错误:{}",e);
-            if (pipeline != null ){
+        } finally {
+            if (pipeline != null) {
                 pipeline.close();
             }
         }
-        return false;
     }
 
     public List<TimeSharingItem> usedVirtualCoin(String userId,String appCode,double usedVirtualCoin){
@@ -108,59 +104,65 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
         String lockKey = buildString(AssemblyRedisDao.LOCK_SPLIT_CODE,AssemblyRedisDao.VIRTUAL_COIN_LOCK,userId);
         String lockValue = String.valueOf(System.currentTimeMillis());
         JedisClusterPipeline pipeline = null;
-            redis.lock(lockKey,lockValue);
+        try {
+            redis.lock(lockKey, lockValue);
             pipeline = redis.pipelined();
-            Response<String> totalResponse = pipeline.get(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX
-                    ,appCode,userId));
-            Response<Map<String,String>> timeSharingResponse = pipeline.hgetAll(buildString(":",USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX
-                    ,appCode,userId));
+            Response<String> totalResponse = pipeline.get(buildString(":", USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX
+                    , appCode, userId));
+            Response<Map<String, String>> timeSharingResponse = pipeline.hgetAll(buildString(":", USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX
+                    , appCode, userId));
             pipeline.sync();
             double total = NumberUtils.toDouble(totalResponse.get());
-            if (total<usedVirtualCoin){
+            if (total < usedVirtualCoin) {
                 return null;
             }
-            Map<String,String> timeSharingStringMap = timeSharingResponse.get();
-            TreeMap<Long,Double> timeSharingMap = new TreeMap<>();
+            Map<String, String> timeSharingStringMap = timeSharingResponse.get();
+            TreeMap<Long, Double> timeSharingMap = new TreeMap<>();
             List<TimeSharingItem> timeSharingItemList = new LinkedList<>();
-            for (Map.Entry<String,String> entry : timeSharingStringMap.entrySet()){
-                timeSharingMap.put(NumberUtils.toLong(entry.getKey()),NumberUtils.toDouble(entry.getValue()));
+            for (Map.Entry<String, String> entry : timeSharingStringMap.entrySet()) {
+                timeSharingMap.put(NumberUtils.toLong(entry.getKey()), NumberUtils.toDouble(entry.getValue()));
             }
             BigDecimal usedVirtualCoinBig = BigDecimal.valueOf(usedVirtualCoin);
-            for (Map.Entry<Long,Double> entry : timeSharingMap.entrySet()){
+            for (Map.Entry<Long, Double> entry : timeSharingMap.entrySet()) {
                 BigDecimal timeCoinValue = BigDecimal.valueOf(entry.getValue());
                 TimeSharingItem timeSharingItem = new TimeSharingItem();
                 timeSharingItem.setTimeout(entry.getKey());
                 timeSharingItemList.add(timeSharingItem);
-                if (usedVirtualCoinBig.compareTo(timeCoinValue) == -1){
+                if (usedVirtualCoinBig.compareTo(timeCoinValue) == -1) {
                     entry.setValue(timeCoinValue.subtract(usedVirtualCoinBig)
-                            .setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                            .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
                     timeSharingItem.setVirtualCoin(usedVirtualCoin);
                     timeSharingStringMap.put(entry.getKey().toString()
-                            ,timeCoinValue.subtract(usedVirtualCoinBig)
-                            .setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+                            , timeCoinValue.subtract(usedVirtualCoinBig)
+                                    .setScale(2, BigDecimal.ROUND_HALF_UP).toString());
                     usedVirtualCoinBig = BigDecimal.ZERO;
-                }else {
+                } else {
                     usedVirtualCoinBig = usedVirtualCoinBig.subtract(timeCoinValue)
-                            .setScale(2,BigDecimal.ROUND_HALF_UP);
+                            .setScale(2, BigDecimal.ROUND_HALF_UP);
                     timeSharingItem.setVirtualCoin(entry.getValue());
                     timeSharingStringMap.remove(entry.getKey().toString());
                 }
-                if (usedVirtualCoinBig.compareTo(BigDecimal.ZERO)<1){
+                if (usedVirtualCoinBig.compareTo(BigDecimal.ZERO) < 1) {
                     break;
                 }
             }
             pipeline = redis.pipelined();
             pipeline.incrByFloat(buildString(":"
-                    ,USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX,appCode,userId),-usedVirtualCoin);
+                    , USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX, appCode, userId), -usedVirtualCoin);
             pipeline.del(buildString(":"
-                    ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId));
+                    , USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX, appCode, userId));
             pipeline.hmset(buildString(":"
-                    ,USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX,appCode,userId),timeSharingStringMap);
+                    , USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX, appCode, userId), timeSharingStringMap);
             List<Object> result = pipeline.syncAndReturnAll();
-            if (CollectionUtils.isEmpty(result)){
+            if (CollectionUtils.isEmpty(result)) {
                 return null;
             }
             return timeSharingItemList;
+        } finally {
+            if (pipeline != null) {
+                pipeline.close();
+            }
+        }
     }
 
     public TimeSharingItem removeExpireVirtualCoin(String userId,String appCode){

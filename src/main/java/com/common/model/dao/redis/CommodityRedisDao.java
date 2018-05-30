@@ -93,12 +93,10 @@ public class CommodityRedisDao extends BaseRedisDao {
             }
             List<Object> result = pipeline.syncAndReturnAll();
             return result.size();
-        } catch (Exception e){
-            LOGGER.error("错误：{}",e);
+        }finally {
             if (pipeline != null) {
                 pipeline.close();
             }
-            return 0;
         }
     }
 
@@ -152,12 +150,10 @@ public class CommodityRedisDao extends BaseRedisDao {
             }
             List<Object> result = pipeline.syncAndReturnAll();
             return result.size();
-        } catch (Exception e){
-            LOGGER.error("错误：{}",e);
+        } finally {
             if (pipeline != null) {
                 pipeline.close();
             }
-            return 0;
         }
     }
 
@@ -189,12 +185,10 @@ public class CommodityRedisDao extends BaseRedisDao {
                 resultList.add(GSON.fromJson(responseString, CommodityBo.class));
             }
             return resultList;
-        } catch (Exception e){
-            LOGGER.error("错误：{}",e);
+        } finally {
             if (pipeline != null) {
                 pipeline.close();
             }
-            return null;
         }
     }
 
@@ -228,12 +222,10 @@ public class CommodityRedisDao extends BaseRedisDao {
                 resultList.add(commodityBo);
             }
             return resultList;
-        } catch (Exception e){
-            LOGGER.error("错误：{}",e);
+        } finally {
             if (pipeline != null) {
                 pipeline.close();
             }
-            return null;
         }
     }
 
@@ -272,7 +264,6 @@ public class CommodityRedisDao extends BaseRedisDao {
             }
             return false;
         } finally {
-            redis.unlock(lockKey, lockValue);
             if (pipeline != null) {
                 pipeline.close();
             }
@@ -366,12 +357,10 @@ public class CommodityRedisDao extends BaseRedisDao {
             }
 
             return resultMap;
-        }catch (Exception e){
-            LOGGER.error("错误：{}",e);
+        } finally {
             if (pipeline != null) {
                 pipeline.close();
             }
-            return null;
         }
     }
 
@@ -420,12 +409,10 @@ public class CommodityRedisDao extends BaseRedisDao {
                 return false;
             }
             return true;
-        }catch (Exception e){
-            LOGGER.error("错误：{}",e);
+        } finally {
             if (pipeline != null) {
                 pipeline.close();
             }
-            return false;
         }
     }
 
@@ -466,12 +453,10 @@ public class CommodityRedisDao extends BaseRedisDao {
                 result.put(idToNoMap.get(entry.getKey()), GSON.fromJson(entry.getValue(), CommodityBo.class));
             }
             return result;
-        }catch (Exception e){
-            LOGGER.error("错误：{}",e);
+        } finally {
             if (pipeline != null) {
                 pipeline.close();
             }
-            return null;
         }
     }
 
