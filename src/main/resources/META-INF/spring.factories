@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.common.autoconfig.feign.FeignConfiguration,com.common.autoconfig.redis.SharingJedisClusterConfig
+com.common.autoconfig.feign.FeignConfiguration,com.common.autoconfig.redis.SharingJedisClusterConfig\
+  ,com.common.autoconfig.redis.RedisDaoConfig
