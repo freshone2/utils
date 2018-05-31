@@ -32,7 +32,7 @@ public class SharingJedisClusterConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(SharingJedisClusterConfig.class);
 
     @Value("${utils.redis.nodes:}")
-    private Set<String> nodes;
+    private String nodes;
 
     @Value("${utils.redis.timeout:1000}")
     private int timeout;
@@ -70,13 +70,14 @@ public class SharingJedisClusterConfig {
     @Bean
     public SharingJedisCluster createdSharingJedisCluster(){
         LOGGER.info("{},{}",timeout,maxAttempts);
-        if (CollectionUtils.isEmpty(nodes)){
+        if (StringUtils.isEmpty(nodes)){
             throw new NullPointerException();
         }
 
         Set<HostAndPort> nodeSet = new HashSet<>();
-        for (String ipPort : nodes) {
+        for (String ipPort : nodes.split(",")) {
             String[] ipPortPair = ipPort.split(":");
+            LOGGER.info(ipPortPair[0].trim()+"---"+ipPortPair[1].trim());
             nodeSet.add(new HostAndPort(ipPortPair[0].trim(), Integer.valueOf(ipPortPair[1].trim())));
         }
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
