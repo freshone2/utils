@@ -1,5 +1,6 @@
 package com.common.route.base;
 
+import com.common.model.bo.commodity.CommodityBo;
 import com.common.model.bo.order.OrderBo;
 import com.common.model.dto.ResultDTO;
 import com.common.model.dto.promotion.DistributeListVirtualCoinDTO;
@@ -8,6 +9,7 @@ import com.common.model.dto.promotion.RestorationCoinDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.List;
 
 /**
  * @Package: pecker.rest
@@ -98,4 +100,10 @@ public interface PromotionRoute {
      */
     @PostMapping("/user/virtualCoin/expire")
     ResultDTO expireVirtualCoin(@RequestParam("userId") String userId, @RequestParam("userId") String appCode );
+
+
+    @PostMapping("/commodity/special")
+    ResultDTO<List<CommodityBo>> createdSpecialActivityWithCommodities(@RequestHeader("userId") String userId
+            , @RequestHeader("appCode") String appCode, @RequestBody List<CommodityBo> commodities);
+
 }
