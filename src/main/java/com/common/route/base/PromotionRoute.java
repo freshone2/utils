@@ -101,7 +101,6 @@ public interface PromotionRoute {
     @PostMapping("/user/virtualCoin/expire")
     ResultDTO expireVirtualCoin(@RequestParam("userId") String userId, @RequestParam("userId") String appCode );
 
-
     @PostMapping("/commodity/special")
     ResultDTO<List<CommodityBo>> createdSpecialActivityWithCommodities(@RequestHeader("userId") String userId
             , @RequestHeader("appCode") String appCode, @RequestBody List<CommodityBo> commodities);
