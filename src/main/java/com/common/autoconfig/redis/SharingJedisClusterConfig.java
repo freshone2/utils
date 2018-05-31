@@ -90,9 +90,11 @@ public class SharingJedisClusterConfig {
         jedisPoolConfig.setTestWhileIdle(testWhileIdle);
         SharingJedisCluster cluster = null;
         if ( StringUtils.isNotBlank(password)){
+            LOGGER.info("密码:{}",password);
             cluster = new SharingJedisCluster(nodeSet,connectionTimeout,timeout,maxAttempts,password,jedisPoolConfig);
+        }else {
+            cluster = new SharingJedisCluster(nodeSet, connectionTimeout, timeout, maxAttempts, jedisPoolConfig);
         }
-        cluster = new SharingJedisCluster(nodeSet,connectionTimeout,timeout,maxAttempts,jedisPoolConfig);
         return cluster;
     }
 }
