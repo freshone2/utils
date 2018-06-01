@@ -98,4 +98,12 @@ public interface MmsRoute {
     @RequestMapping(value = "/v1/commodity/offline", method = RequestMethod.PUT)
     ResultDTO offlineCombination(@RequestBody TaskDTO<String> taskDTO);
 
+    /**
+     * 商品类目
+     *
+     * @return
+     */
+    @RequestMapping(value = "/v1/commodity/category", method = RequestMethod.GET)
+    public String findCommodityCategories();
+
 }

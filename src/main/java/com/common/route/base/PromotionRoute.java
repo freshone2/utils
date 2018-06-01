@@ -3,6 +3,7 @@ package com.common.route.base;
 import com.common.model.bo.commodity.CommodityBo;
 import com.common.model.bo.order.OrderBo;
 import com.common.model.dto.ResultDTO;
+import com.common.model.dto.order.CalculatingDTO;
 import com.common.model.dto.promotion.DistributeListVirtualCoinDTO;
 import com.common.model.dto.promotion.DistributeVirtualCoinDTO;
 import com.common.model.dto.promotion.RestorationCoinDTO;
@@ -27,7 +28,7 @@ public interface PromotionRoute {
      * @return
      */
     @PostMapping("/activity/calculation/unused")
-     ResultDTO<OrderBo> calculationOrderActivity(@RequestBody OrderBo orderBo);
+     ResultDTO<CalculatingDTO> calculationOrderActivity(@RequestBody OrderBo orderBo);
 
     /**
      * 计算订单金额（并使用）
@@ -36,7 +37,7 @@ public interface PromotionRoute {
      * @return
      */
     @PostMapping("/activity/calculation/used")
-     ResultDTO<OrderBo> calculationOrderAndUse(@RequestBody OrderBo orderBo);
+     ResultDTO<CalculatingDTO> calculationOrderAndUse(@RequestBody OrderBo orderBo);
 
     /**
      * 退返优惠券
