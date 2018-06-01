@@ -22,6 +22,7 @@ public class BaseRedisDao {
     protected static final Gson GSON = new Gson();
     public static final int MAX_RETRY_COUNT = 5;
 
+    @Autowired
     private SharingJedisCluster sharingJedisCluster;
 
     protected SharingJedisCluster getRedis(){
