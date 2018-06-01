@@ -351,6 +351,7 @@ public class CommodityRedisDao extends BaseRedisDao {
                 Response<String> numResponse = pipeline.hget(stockKey, specId.toString());
                 responseMap.put(specId, numResponse);
             }
+            pipeline.sync();
             Map<Integer, Integer> resultMap = new HashMap<>(specIds.size());
             for (Map.Entry<Integer, Response<String>> entry : responseMap.entrySet()) {
                 resultMap.put(entry.getKey(), NumberUtils.toInt(entry.getValue().get()));
