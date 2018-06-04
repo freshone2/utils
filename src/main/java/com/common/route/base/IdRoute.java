@@ -2,6 +2,7 @@ package com.common.route.base;
 
 import com.common.model.dto.ResultDTO;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -15,5 +16,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface IdRoute {
 
     @GetMapping("/id")
-    public ResultDTO findId(@RequestParam("userId") String userId,@RequestParam("type") Integer type);
+    public ResultDTO findId(@RequestHeader("requestId") String requestId, @RequestParam("userId") String userId, @RequestParam("type") Integer type);
 }

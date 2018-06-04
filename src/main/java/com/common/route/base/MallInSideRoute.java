@@ -12,7 +12,7 @@ public interface MallInSideRoute {
      * @return
      */
     @RequestMapping(value = "/mall/v1/commodities/message", method = RequestMethod.GET)
-    public String commoditiesMessage(@RequestHeader("appCode") String appCode, @RequestParam("commodityIds") String commodityIds);
+    public String commoditiesMessage(@RequestHeader("requestId") String requestId,@RequestHeader("appCode") String appCode, @RequestParam("commodityIds") String commodityIds);
 
     /**
      * 商品列表
@@ -26,6 +26,7 @@ public interface MallInSideRoute {
      */
     @RequestMapping(value = "/mall/v1/commodities", method = RequestMethod.GET)
     public String commodities(
+            @RequestHeader("requestId") String requestId,
             @RequestParam(value = "categoryId",required = false) Integer categoryId,
             @RequestParam(value = "brandId",required = false) Integer brandId,
             @RequestParam(value = "params",required = false)String params,

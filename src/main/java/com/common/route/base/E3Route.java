@@ -19,7 +19,7 @@ public interface E3Route {
      * @return
      */
     @GetMapping(value = "/v1/e3/channel/code/validaty")
-    ResultDTO checkChannelCodeValidity(@RequestParam("channel") String channel);
+    ResultDTO checkChannelCodeValidity(@RequestHeader("requestId") String requestId,@RequestParam("channel") String channel);
 
     /**
      * 获取商品编码有效性
@@ -28,7 +28,7 @@ public interface E3Route {
      * @return
      */
     @GetMapping(value = "/v1/e3/code/validity")
-    ResultDTO checkGoodsCodeValidity(@RequestParam("code")String code);
+    ResultDTO checkGoodsCodeValidity(@RequestHeader("requestId") String requestId,@RequestParam("code")String code);
 
     /**
      * 获取商品库存
@@ -38,7 +38,7 @@ public interface E3Route {
      * @return
      */
     @GetMapping(value = "/v1/e3/inventory")
-     ResultDTO findCommodityInventory(@RequestParam("code") String code,@RequestParam("wareHouseCode") String wareHouseCode);
+     ResultDTO findCommodityInventory(@RequestHeader("requestId") String requestId,@RequestParam("code") String code,@RequestParam("wareHouseCode") String wareHouseCode);
 
     /**
      * 商品库存同步(全量)
@@ -46,7 +46,7 @@ public interface E3Route {
      * @return
      */
     @GetMapping(value = "/v1/e3/inventory/all")
-    ResultDTO syncInventory();
+    ResultDTO syncInventory(@RequestHeader("requestId") String requestId);
 
     /**
      * 创建E3订单
@@ -55,7 +55,7 @@ public interface E3Route {
      * @return
      */
     @PostMapping(value = "/v1/e3/order")
-    ResultDTO createE3Order(@RequestBody Map<String, String> body);
+    ResultDTO createE3Order(@RequestHeader("requestId") String requestId,@RequestBody Map<String, String> body);
 
     /**
      * 查询订单发货状态
@@ -64,7 +64,7 @@ public interface E3Route {
      * @return
      */
     @GetMapping(value = "/v1/e3/order/delivery")
-    ResultDTO queryDelivery(@RequestParam("orderId") String orderId);
+    ResultDTO queryDelivery(@RequestHeader("requestId") String requestId,@RequestParam("orderId") String orderId);
 
     /**
      * 取消订单发货
@@ -73,7 +73,7 @@ public interface E3Route {
      * @return
      */
     @GetMapping(value = "/v1/e3/order/delivery/cancel")
-    ResultDTO cancelDelivery(@RequestParam("orderId") String orderId);
+    ResultDTO cancelDelivery(@RequestHeader("requestId") String requestId,@RequestParam("orderId") String orderId);
 
     /**
      * 作废订单
@@ -82,7 +82,7 @@ public interface E3Route {
      * @return
      */
     @PutMapping(value = "/v1/e3/invalid")
-    public ResultDTO invalidOrder(@RequestBody Map<String, String> body) ;
+    public ResultDTO invalidOrder(@RequestHeader("requestId") String requestId,@RequestBody Map<String, String> body) ;
 
     /**
 
@@ -93,7 +93,7 @@ public interface E3Route {
      * @return
      */
     @PostMapping(value = "/v1/e3/refund")
-    ResultDTO createE3RefundOrder(@RequestBody Map<String, String> body);
+    ResultDTO createE3RefundOrder(@RequestHeader("requestId") String requestId,@RequestBody Map<String, String> body);
 
     /**
      * 查询退单入库信息
@@ -102,7 +102,7 @@ public interface E3Route {
      * @return
      */
     @GetMapping(value = "/v1/e3/refund/status")
-    ResultDTO queryOrderReturnGoodsStatus(@RequestParam("refundOrderId") String refundOrderId);
+    ResultDTO queryOrderReturnGoodsStatus(@RequestHeader("requestId") String requestId,@RequestParam("refundOrderId") String refundOrderId);
 
 
 }

@@ -4,6 +4,7 @@ import com.common.model.dto.ResultDTO;
 import com.common.model.dto.logistics.LogisticsDTO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -22,6 +23,6 @@ public interface LogisticsRoute {
      * @return
      */
     @PostMapping("/logistics")
-    ResultDTO addLogistics(@RequestBody LogisticsDTO logisticsDTO);
+    ResultDTO addLogistics(@RequestHeader("requestId") String requestId, @RequestBody LogisticsDTO logisticsDTO);
 
 }

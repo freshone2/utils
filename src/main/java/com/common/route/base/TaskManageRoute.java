@@ -20,7 +20,7 @@ public interface TaskManageRoute {
      * @return
      */
     @PostMapping(value = "/task")
-    ResultDTO addTask(@RequestBody TaskDTO taskDTO);
+    ResultDTO addTask(@RequestHeader("requestId") String requestId,@RequestBody TaskDTO taskDTO);
 
     /**
      * 移除任务
@@ -29,7 +29,7 @@ public interface TaskManageRoute {
      * @return
      */
     @DeleteMapping(value = "/task")
-    ResultDTO removeTask(@RequestParam("taskId") String taskId);
+    ResultDTO removeTask(@RequestHeader("requestId") String requestId,@RequestParam("taskId") String taskId);
 
     /**
      * 立即运行任务
@@ -38,5 +38,5 @@ public interface TaskManageRoute {
      * @return
      */
     @PutMapping(value = "/task/starting")
-    ResultDTO advanceStartTask(@RequestParam("taskId") String taskId);
+    ResultDTO advanceStartTask(@RequestHeader("requestId") String requestId,@RequestParam("taskId") String taskId);
 }

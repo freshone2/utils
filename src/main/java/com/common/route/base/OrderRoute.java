@@ -20,7 +20,7 @@ public interface OrderRoute {
      * @return
      */
     @PostMapping(value = "")
-    ResultDTO createdOrder(@RequestBody OrderDTO orderDTO);
+    ResultDTO createdOrder(@RequestHeader("requestId") String requestId,@RequestBody OrderDTO orderDTO);
 
     /**
      * 更新订单
@@ -29,7 +29,7 @@ public interface OrderRoute {
      * @return
      */
     @PutMapping(value = "")
-    ResultDTO updateOrder(@RequestBody OrderUpdateDTO orderDTO);
+    ResultDTO updateOrder(@RequestHeader("requestId") String requestId,@RequestBody OrderUpdateDTO orderDTO);
 
 
     /**
@@ -39,7 +39,7 @@ public interface OrderRoute {
      * @return
      */
     @PostMapping(value = "/status")
-    ResultDTO updateStatus(@RequestBody StatusRequestDTO requestDTO);
+    ResultDTO updateStatus(@RequestHeader("requestId") String requestId,@RequestBody StatusRequestDTO requestDTO);
 
     /**
      * 更新订单状态（无其他联动操作）
@@ -48,7 +48,7 @@ public interface OrderRoute {
      * @return
      */
     @PostMapping(value = "/status/only")
-    ResultDTO updateStatusOnly(@RequestBody StatusRequestDTO requestDTO);
+    ResultDTO updateStatusOnly(@RequestHeader("requestId") String requestId,@RequestBody StatusRequestDTO requestDTO);
 
     /**
      * 支付成功
@@ -57,7 +57,7 @@ public interface OrderRoute {
      * @return
      */
     @PostMapping(value = "/paySuccess")
-    ResultDTO paySuccess(@RequestBody PayOrderSuccessDTO payOrderSuccessDTO);
+    ResultDTO paySuccess(@RequestHeader("requestId") String requestId,@RequestBody PayOrderSuccessDTO payOrderSuccessDTO);
 
     /**
      * 取消订单
@@ -66,7 +66,7 @@ public interface OrderRoute {
      * @return
      */
     @PostMapping(value = "/cancel")
-    ResultDTO cancel(@RequestParam("orderId") String orderId);
+    ResultDTO cancel(@RequestHeader("requestId") String requestId,@RequestParam("orderId") String orderId);
 
     /**
      * 发货
@@ -75,7 +75,7 @@ public interface OrderRoute {
      * @return
      */
     @PostMapping(value = "/delivering")
-    ResultDTO deliverGoods(@RequestBody DeliverGoodDTO deliverGoodDTO);
+    ResultDTO deliverGoods(@RequestHeader("requestId") String requestId,@RequestBody DeliverGoodDTO deliverGoodDTO);
 
     /**
      * 调价
@@ -85,7 +85,7 @@ public interface OrderRoute {
      * @return
      */
     @PostMapping(value = "/adjusting")
-    ResultDTO adjustPrice(@RequestParam("orderId") String orderId,@RequestParam("amount") double amount);
+    ResultDTO adjustPrice(@RequestHeader("requestId") String requestId,@RequestParam("orderId") String orderId,@RequestParam("amount") double amount);
 
     /**
      * 订单超时
@@ -94,5 +94,5 @@ public interface OrderRoute {
      * @return
      */
     @PostMapping(value = "/overtime")
-    ResultDTO orderOvertime(@RequestParam("orderId") String orderId);
+    ResultDTO orderOvertime(@RequestHeader("requestId") String requestId,@RequestParam("orderId") String orderId);
 }

@@ -19,7 +19,7 @@ public interface MmsRoute {
      * @return
      */
     @RequestMapping(value = "/v1/coupon/offline", method = RequestMethod.PUT)
-    ResultDTO offlineCouponTask(@RequestBody TaskDTO taskDTO);
+    ResultDTO offlineCouponTask(@RequestHeader("requestId") String requestId,@RequestBody TaskDTO taskDTO);
 
     /**
      * 上线优惠券
@@ -27,7 +27,7 @@ public interface MmsRoute {
      * @return
      */
     @RequestMapping(value = "/v1/coupon/online", method = RequestMethod.PUT)
-    ResultDTO onlineCouponTask(@RequestBody TaskDTO taskDTO);
+    ResultDTO onlineCouponTask(@RequestHeader("requestId") String requestId,@RequestBody TaskDTO taskDTO);
 
 
 
@@ -37,21 +37,21 @@ public interface MmsRoute {
      * @return
      */
     @RequestMapping(value = "/v1/coupon", method = RequestMethod.POST)
-    ResultDTO createCoupon(@RequestBody CouponDTO couponDTO);
+    ResultDTO createCoupon(@RequestHeader("requestId") String requestId,@RequestBody CouponDTO couponDTO);
 
     /**
      * 商品上架
      * @return
      */
     @RequestMapping(value = "/v1/commodity/online", method = RequestMethod.PUT)
-    ResultDTO onlineCommodity(@RequestBody TaskDTO taskDTO);
+    ResultDTO onlineCommodity(@RequestHeader("requestId") String requestId,@RequestBody TaskDTO taskDTO);
 
     /**
      * 商品数据更新
      * @return
      */
     @RequestMapping(value = "/v1/commodity", method = RequestMethod.PUT)
-    ResultDTO updatCommodity(@RequestBody TaskDTO taskDTO);
+    ResultDTO updatCommodity(@RequestHeader("requestId") String requestId,@RequestBody TaskDTO taskDTO);
 
     /**
      * 平台活动上线
@@ -60,7 +60,7 @@ public interface MmsRoute {
      * @return
      */
     @RequestMapping(value = "/v1/platform/activity/online", method = RequestMethod.PUT)
-    ResultDTO onlinePlatformActivity(@RequestParam("activityId") Integer activityId);
+    ResultDTO onlinePlatformActivity(@RequestHeader("requestId") String requestId,@RequestParam("activityId") Integer activityId);
 
     /**
      * 平台活动下线
@@ -69,7 +69,7 @@ public interface MmsRoute {
      * @return
      */
     @RequestMapping(value = "/v1/platform/activity/offline", method = RequestMethod.PUT)
-    ResultDTO offlineActivity(@RequestParam("activityId") Integer activityId);
+    ResultDTO offlineActivity(@RequestHeader("requestId") String requestId,@RequestParam("activityId") Integer activityId);
 
     /**
      * 限时上线活动
@@ -78,7 +78,7 @@ public interface MmsRoute {
      * @return
      */
     @RequestMapping(value = "/discount/online",method = RequestMethod.PUT)
-    ResultDTO onlinePromotionActivity(@RequestBody Map<String,Object> params);
+    ResultDTO onlinePromotionActivity(@RequestHeader("requestId") String requestId,@RequestBody Map<String,Object> params);
 
     /**
      * 限时下线活动
@@ -87,16 +87,16 @@ public interface MmsRoute {
      * @return
      */
     @RequestMapping(value = "/discount/offline",method = RequestMethod.PUT)
-    ResultDTO offlinePromotionActivity(@RequestBody Map<String,Object> params);
+    ResultDTO offlinePromotionActivity(@RequestHeader("requestId") String requestId,@RequestBody Map<String,Object> params);
 
     @RequestMapping(value = "/v1/combination/online", method = RequestMethod.PUT)
-    ResultDTO onlineCombination(@RequestBody TaskDTO<String> taskDTO);
+    ResultDTO onlineCombination(@RequestHeader("requestId") String requestId,@RequestBody TaskDTO<String> taskDTO);
 
     @RequestMapping(value = "/integral/publish",method = RequestMethod.PUT)
-    public ResultDTO<Boolean> integralPublish(@RequestBody IntegralPublishDTO data);
+    public ResultDTO<Boolean> integralPublish(@RequestHeader("requestId") String requestId,@RequestBody IntegralPublishDTO data);
 
     @RequestMapping(value = "/v1/commodity/offline", method = RequestMethod.PUT)
-    ResultDTO offlineCombination(@RequestBody TaskDTO<String> taskDTO);
+    ResultDTO offlineCombination(@RequestHeader("requestId") String requestId,@RequestBody TaskDTO<String> taskDTO);
 
     /**
      * 商品类目
@@ -104,6 +104,21 @@ public interface MmsRoute {
      * @return
      */
     @RequestMapping(value = "/v1/commodity/category", method = RequestMethod.GET)
-    public String findCommodityCategories();
+    String findCommodityCategories(@RequestHeader("requestId") String requestId);
 
+    /**
+     * 限时折扣列表
+     *
+     * @param filter
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping(value = "/v1/promotion/activities",method = RequestMethod.GET)
+    public String findPromotionActivities(
+            @RequestHeader("requestId") String requestId,
+            @RequestHeader(value = "appCode") String appCode
+            , @RequestParam(value = "filter",required = false) String filter
+            , @RequestParam(name = "page" ,required = false,defaultValue ="1") Integer page
+            , @RequestParam(name = "pageSize" ,required = false,defaultValue ="10")  Integer pageSize);
 }

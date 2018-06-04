@@ -2,6 +2,7 @@ package com.common.route.base;
 
 import com.common.model.dto.ResultDTO;
 import com.common.model.dto.pay.JahwaRefundDTO;
+import com.common.model.dto.pay.OrderTransDTO;
 import com.common.model.dto.pay.PaySerialDTO;
 import com.common.model.dto.pay.PaySerialSuccessDTO;
 import org.springframework.web.bind.annotation.*;
@@ -18,17 +19,20 @@ import java.util.Map;
 public interface PayRoute {
 
     @PostMapping(value = "")
-    ResultDTO createdPayment(@RequestBody PaySerialDTO paySerialDTO);
+    ResultDTO createdPayment(@RequestHeader("requestId") String requestId,@RequestBody PaySerialDTO paySerialDTO);
 
     @PutMapping(value = "")
-    ResultDTO updatePaySerialNum(@RequestBody PaySerialDTO paySerialDTO);
+    ResultDTO updatePaySerialNum(@RequestHeader("requestId") String requestId,@RequestBody PaySerialDTO paySerialDTO);
 
     @PostMapping(value = "/cancel")
-    ResultDTO cancel(@RequestBody Map<String,String> request);
+    ResultDTO cancel(@RequestHeader("requestId") String requestId,@RequestBody Map<String,String> request);
 
     @PostMapping(value = "/paySuccess")
-    ResultDTO paySuccess(@RequestBody PaySerialSuccessDTO paySuccessDTO);
+    ResultDTO paySuccess(@RequestHeader("requestId") String requestId,@RequestBody PaySerialSuccessDTO paySuccessDTO);
 
     @PostMapping(value = "/jahwaRefund")
-    ResultDTO refundOrder(@RequestBody JahwaRefundDTO jahwaRefundDTO);
+    ResultDTO refundOrder(@RequestHeader("requestId") String requestId,@RequestBody JahwaRefundDTO jahwaRefundDTO);
+
+    @PostMapping("/status")
+    ResultDTO queryOrder(@RequestHeader("requestId") String requestId,@RequestBody OrderTransDTO orderTransDTO);
 }

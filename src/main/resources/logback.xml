@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>${HOSTNAME}</contextName>
+    <property name="LOG_PATH" value="phantom-log" />
+    <springProperty scope="context" name="appName" source="spring.application.name" />
+    <springProperty scope="context" name="ip" source="spring.cloud.client.ipAddress" />
+    <conversionRule conversionWord="loggerId" converterClass="com.common.logger.LoggerIdConverter" />
+    <property name="CONSOLE_LOG_PATTERN"
+              value="[%d{yyyy-MM-dd HH:mm:ss.SSS} %X{last} ${ip} ${appName} %highlight(%-5level) %yellow(%X{X-B3-TraceId}),%green(%X{X-B3-SpanId}),%blue(%X{X-B3-ParentSpanId}) %yellow(%thread) %green(%logger) %msg%n"/>
+
+    <appender name="logstash" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/Users/jklofs/Desktop/32.json</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>../${LOG_PATH}/${appName}/${appName}-%d{yyyy-MM-dd}.json</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <pattern>
+                        {
+                        "loggerId":"%loggerId",
+                        "from": "%X{FROM}",
+                        "to":"%X{TO}",
+                        "requestId":"%X{REQUEST_ID}",
+                        "interfaceId":"%X{INTERFACE_ID}",
+                        "interfaceName":"%X{INTERFACE_NAME}",
+                        "interfaceType":"%X{INTERFACE_TYPE}",
+                        "appCode":"%X{APP_CODE}",
+                        "requestStatus":"%X{REQUEST_STATUS}",
+                        "responseCode":"%X{RESPONSE_CODE}",
+                        "requestContent":"%X{REQUEST_CONTENT}",
+                        "responseContent":"%X{RESPONSE_CONTENT}",
+                        "startAt":"%X{START_AT}",
+                        "endAt":%X{END_AT},
+                        "serverIp":%X{SERVER_IP},
+                        "app": "${appName}",
+                        "level": "%level",
+                        "trace": "%X{X-B3-TraceId:-}",
+                        "span": "%X{X-B3-SpanId:-}",
+                        "parent": "%X{X-B3-ParentSpanId:-}",
+                        "thread": "%thread",
+                        "class": "%logger{40}",
+                        "message": "%message",
+                        "stack_trace": "%exception{10}"
+                        }
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+    </appender>
+
+    <logger name="org.springframework" level="INFO" />
+    <logger name="org.hibernate" level="INFO" />
+    <logger name="com.kingboy.repository" level="DEBUG" />
+
+    <root level="INFO">
+        <appender-ref ref="logstash" />
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

@@ -5,9 +5,12 @@ import com.common.model.dao.redis.AssemblyRedisDao;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.util.JedisClusterCRC16;
 import redis.clients.util.SafeEncoder;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +22,8 @@ import java.util.Set;
  * @date: 2018/5/23 下午3:51
  */
 public class SharingJedisCluster extends JedisCluster {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SharingJedisCluster.class);
+
     public SharingJedisCluster(HostAndPort node) {
         super(node);
     }
@@ -81,6 +86,22 @@ public class SharingJedisCluster extends JedisCluster {
 
     public SharingJedisCluster(Set<HostAndPort> jedisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, String password, GenericObjectPoolConfig poolConfig) {
         super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, poolConfig);
+    }
+
+    public Set<String> keys(String pattern) {
+        Set<String> keys = new HashSet<>();
+        Map<String, JedisPool> clusterNodes = this.getClusterNodes();
+        for(JedisPool jedisPool : clusterNodes.values() ) {
+            Jedis jedis = jedisPool.getResource();
+            try {
+                keys.addAll(jedis.keys(pattern));
+            } catch (Exception e) {
+                LOGGER.error("获取keys发生异常！{}",e);
+            } finally {
+                jedis.close();
+            }
+        }
+        return keys;
     }
 
     public JedisClusterPipeline pipelined(){
@@ -184,27 +205,4 @@ public class SharingJedisCluster extends JedisCluster {
         redis.close();
         return false;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

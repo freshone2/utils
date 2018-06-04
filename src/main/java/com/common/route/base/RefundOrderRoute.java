@@ -23,7 +23,7 @@ public interface RefundOrderRoute {
      * @return
      */
     @PutMapping("")
-    ResultDTO updateRefundOrder(@RequestBody RefundUpdateDTO requestDTO);
+    ResultDTO updateRefundOrder(@RequestHeader("requestId") String requestId,@RequestBody RefundUpdateDTO requestDTO);
 
     /**
      * 更新退款订单状态（有其他联动操作）
@@ -32,7 +32,7 @@ public interface RefundOrderRoute {
      * @return
      */
     @PostMapping("/status")
-    ResultDTO updateRefundOrderStatus(@RequestBody StatusRequestDTO requestDTO);
+    ResultDTO updateRefundOrderStatus(@RequestHeader("requestId") String requestId,@RequestBody StatusRequestDTO requestDTO);
 
     /**
      * 更新退款订单状态（无其他联动操作）
@@ -41,7 +41,7 @@ public interface RefundOrderRoute {
      * @return
      */
     @PostMapping("/status/only")
-    ResultDTO updateRefundOrderStatusOnly(@RequestBody StatusRequestDTO requestDTO);
+    ResultDTO updateRefundOrderStatusOnly(@RequestHeader("requestId") String requestId,@RequestBody StatusRequestDTO requestDTO);
 
     /**
      * 退款成功
@@ -50,7 +50,7 @@ public interface RefundOrderRoute {
      * @return
      */
     @PostMapping("/refundSuccess")
-    ResultDTO refundSuccess(@RequestParam("refundOrderId") String refundOrderId);
+    ResultDTO refundSuccess(@RequestHeader("requestId") String requestId,@RequestParam("refundOrderId") String refundOrderId);
 
     /**
      * 同意退款
@@ -59,7 +59,7 @@ public interface RefundOrderRoute {
      * @return
      */
     @PostMapping("/reimburse")
-    ResultDTO reimburse(@RequestParam("refundOrderId") String refundOrderId);
+    ResultDTO reimburse(@RequestHeader("requestId") String requestId,@RequestParam("refundOrderId") String refundOrderId);
 
     /**
      * 取消退款申请
@@ -68,7 +68,7 @@ public interface RefundOrderRoute {
      * @return
      */
     @PostMapping("/cancel")
-    ResultDTO cancelRefundOrder(@RequestParam("refundOrderId") String refundOrderId);
+    ResultDTO cancelRefundOrder(@RequestHeader("requestId") String requestId,@RequestParam("refundOrderId") String refundOrderId);
 
     /**
      * 拒绝退款申请
@@ -77,7 +77,7 @@ public interface RefundOrderRoute {
      * @return
      */
     @PostMapping("/request/reject")
-    ResultDTO rejectRequestRefundOrder(@RequestBody Map<String,String> request);
+    ResultDTO rejectRequestRefundOrder(@RequestHeader("requestId") String requestId,@RequestBody Map<String,String> request);
 
     /**
      * 拒绝退货申请
@@ -86,7 +86,7 @@ public interface RefundOrderRoute {
      * @return
      */
     @PostMapping("/good/reject")
-    ResultDTO rejectGoodRefundOrder(@RequestBody Map<String,String> request);
+    ResultDTO rejectGoodRefundOrder(@RequestHeader("requestId") String requestId,@RequestBody Map<String,String> request);
 
     /**
      * 平台端拒绝退款
@@ -95,5 +95,5 @@ public interface RefundOrderRoute {
      * @return
      */
     @PostMapping("/platform/reject")
-    ResultDTO rejectPlatformRefundOrder(@RequestBody Map<String,String> request);
+    ResultDTO rejectPlatformRefundOrder(@RequestHeader("requestId") String requestId,@RequestBody Map<String,String> request);
 }

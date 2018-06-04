@@ -18,7 +18,7 @@ public interface SessionRoute {
      * @return
      */
     @PutMapping(value = "/v1/session")
-    ResultDTO update(@RequestParam("sessionString") String sessionString);
+    ResultDTO update(@RequestHeader("requestId") String requestId,@RequestParam("sessionString") String sessionString);
 
     /**
      * 删除session
@@ -27,7 +27,7 @@ public interface SessionRoute {
      * @return
      */
     @DeleteMapping(value = "/v1/session")
-    ResultDTO delete(@RequestParam("sessionId") String sessionId);
+    ResultDTO delete(@RequestHeader("requestId") String requestId,@RequestParam("sessionId") String sessionId);
 
     /**
      * 新增session
@@ -36,7 +36,7 @@ public interface SessionRoute {
      * @return
      */
     @PostMapping(value = "/v1/session")
-    ResultDTO doCreate(@RequestParam("sessionString") String sessionString);
+    ResultDTO doCreate(@RequestHeader("requestId") String requestId,@RequestParam("sessionString") String sessionString);
 
     /**
      * 查询session
@@ -45,7 +45,7 @@ public interface SessionRoute {
      * @return
      */
     @GetMapping(value = "/v1/session")
-    ResultDTO doReadSession(@RequestParam("sessionId") String sessionId);
+    ResultDTO doReadSession(@RequestHeader("requestId") String requestId,@RequestParam("sessionId") String sessionId);
 
     /**
      * 获取活动的session的对象
@@ -63,6 +63,6 @@ public interface SessionRoute {
      * @return
      */
     @GetMapping(value = "/v1/perms")
-    ResultDTO findPermissions(@RequestParam("systemKey") String systemKey
+    ResultDTO findPermissions(@RequestHeader("requestId") String requestId,@RequestParam("systemKey") String systemKey
             ,@RequestParam("userName") String userName);
 }

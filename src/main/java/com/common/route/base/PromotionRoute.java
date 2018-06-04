@@ -28,7 +28,7 @@ public interface PromotionRoute {
      * @return
      */
     @PostMapping("/activity/calculation/unused")
-     ResultDTO<CalculatingDTO> calculationOrderActivity(@RequestBody OrderBo orderBo);
+     ResultDTO<CalculatingDTO> calculationOrderActivity(@RequestHeader("requestId") String requestId,@RequestBody OrderBo orderBo);
 
     /**
      * 计算订单金额（并使用）
@@ -37,7 +37,7 @@ public interface PromotionRoute {
      * @return
      */
     @PostMapping("/activity/calculation/used")
-     ResultDTO<CalculatingDTO> calculationOrderAndUse(@RequestBody OrderBo orderBo);
+     ResultDTO<CalculatingDTO> calculationOrderAndUse(@RequestHeader("requestId") String requestId,@RequestBody OrderBo orderBo);
 
     /**
      * 退返优惠券
@@ -49,7 +49,7 @@ public interface PromotionRoute {
      * @return
      */
     @PostMapping("/coupon/restoration")
-     ResultDTO restorationCoupon(@RequestParam("userId") String userId, @RequestParam("userId") String appCode
+     ResultDTO restorationCoupon(@RequestHeader("requestId") String requestId,@RequestParam("userId") String userId, @RequestParam("userId") String appCode
             , @RequestParam(value = "activityCouponId") Integer activityCouponId
             , @RequestParam(value = "couponId") Integer couponId);
 
@@ -62,7 +62,7 @@ public interface PromotionRoute {
      * @return
      */
     @PostMapping("/user/coupon")
-    ResultDTO giveCoupon(@RequestParam("userId") String userId
+    ResultDTO giveCoupon(@RequestHeader("requestId") String requestId,@RequestParam("userId") String userId
             ,@RequestParam("appCode") String appCode ,@RequestParam("activityCouponId")  Integer activityCouponId);
 
     /**
@@ -72,7 +72,7 @@ public interface PromotionRoute {
      * @return
      */
     @PostMapping("/user/virtualCoin")
-    ResultDTO giveVirtualCoin(@RequestBody DistributeVirtualCoinDTO coinDTO);
+    ResultDTO giveVirtualCoin(@RequestHeader("requestId") String requestId,@RequestBody DistributeVirtualCoinDTO coinDTO);
 
     /**
      * 批量分发积分
@@ -81,7 +81,7 @@ public interface PromotionRoute {
      * @return
      */
     @PostMapping("/batch/virtualCoin")
-    ResultDTO giveVirtualCoinList(@RequestBody DistributeListVirtualCoinDTO coinDTO);
+    ResultDTO giveVirtualCoinList(@RequestHeader("requestId") String requestId,@RequestBody DistributeListVirtualCoinDTO coinDTO);
 
     /**
      * 返还积分
@@ -90,7 +90,7 @@ public interface PromotionRoute {
      * @return
      */
     @PostMapping("/user/virtualCoin/restoration")
-    ResultDTO restorationCoin(@RequestBody RestorationCoinDTO coinDTO);
+    ResultDTO restorationCoin(@RequestHeader("requestId") String requestId,@RequestBody RestorationCoinDTO coinDTO);
 
     /**
      * 检索用户积分并过期
@@ -100,10 +100,10 @@ public interface PromotionRoute {
      * @return
      */
     @PostMapping("/user/virtualCoin/expire")
-    ResultDTO expireVirtualCoin(@RequestParam("userId") String userId, @RequestParam("userId") String appCode );
+    ResultDTO expireVirtualCoin(@RequestHeader("requestId") String requestId,@RequestParam("userId") String userId, @RequestParam("userId") String appCode );
 
     @PostMapping("/commodity/special")
-    ResultDTO<List<CommodityBo>> createdSpecialActivityWithCommodities(@RequestHeader("userId") String userId
+    ResultDTO<List<CommodityBo>> createdSpecialActivityWithCommodities(@RequestHeader("requestId") String requestId,@RequestHeader("userId") String userId
             , @RequestHeader("appCode") String appCode, @RequestBody List<CommodityBo> commodities);
 
 }

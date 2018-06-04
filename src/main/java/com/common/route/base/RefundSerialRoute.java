@@ -23,7 +23,7 @@ public interface RefundSerialRoute {
      * @return
      */
     @PostMapping("")
-    ResultDTO createdRefundment(@RequestBody RefundSerialDTO serialDTO);
+    ResultDTO createdRefundment(@RequestHeader("requestId") String requestId,@RequestBody RefundSerialDTO serialDTO);
 
     /**
      * 修改退款流水
@@ -32,7 +32,7 @@ public interface RefundSerialRoute {
      * @return
      */
     @PutMapping("")
-    ResultDTO updateRefundment(@RequestBody RefundSerialDTO serialDTO);
+    ResultDTO updateRefundment(@RequestHeader("requestId") String requestId,@RequestBody RefundSerialDTO serialDTO);
 
     /**
      * 退款流水退款成功
@@ -41,7 +41,7 @@ public interface RefundSerialRoute {
      * @return
      */
     @PostMapping("/refundSuccess")
-    ResultDTO refundSuccess(@RequestBody RefundSerialSuccessDTO serialDTO);
+    ResultDTO refundSuccess(@RequestHeader("requestId") String requestId,@RequestBody RefundSerialSuccessDTO serialDTO);
 
     /**
      * 取消退款流水
@@ -50,6 +50,6 @@ public interface RefundSerialRoute {
      * @return
      */
     @PostMapping("/cancel")
-    ResultDTO cancel(@RequestBody Map<String,String> serialDTO);
+    ResultDTO cancel(@RequestHeader("requestId") String requestId,@RequestBody Map<String,String> serialDTO);
 
 }
