@@ -53,7 +53,7 @@ public interface SessionRoute {
      * @return
      */
     @GetMapping(value = "/v1/session/activity")
-    ResultDTO getActiveSessions();
+    ResultDTO getActiveSessions(@RequestHeader("requestId") String requestId);
 
     /**
      * 获取权限值
