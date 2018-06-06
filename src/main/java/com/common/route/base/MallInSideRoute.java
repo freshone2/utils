@@ -33,6 +33,7 @@ public interface MallInSideRoute {
             @RequestParam(value = "filter", required = false, defaultValue = "sales") String filter,
             @RequestParam(value = "limit", required = false, defaultValue = "1") int limit,
             @RequestParam(value = "offset", required = false, defaultValue = "20") int offset,
+            @RequestParam(value = "activityIds",required = false) String activityIds,
             @RequestHeader("appCode")String appCode);
 
 }
