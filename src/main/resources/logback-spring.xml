@@ -4,8 +4,8 @@
     <property name="LOG_PATH" value="phantom-log" />
     <springProperty scope="context" name="appName" source="spring.application.name" />
     <springProperty scope="context" name="ip" source="spring.cloud.client.ipAddress" />
-    <springProperty scope="context" name="logstashPath" source="logstash.log.file"/>
-    <springProperty scope="context" name="loggingFileName" source="spring.application.name"/>
+    <springProperty scope="context" name="logstash.log.file" source="logstash.log.file" defaultValue="./bootstrap.log"/>
+    <springProperty scope="context" name="logging.file" source="logging.file"  defaultValue="./bootstrap-elk.log"/>
     <conversionRule conversionWord="loggerId" converterClass="com.common.logger.LoggerIdConverter" />
     <property name="CONSOLE_LOG_PATTERN"
               value="[%d{yyyy-MM-dd HH:mm:ss.SSS} %X{REQUEST_ID} %loggerId %X{last} ${ip} ${appName} %highlight(%-5level) %yellow(%X{X-B3-TraceId}),%green(%X{X-B3-SpanId}),%blue(%X{X-B3-ParentSpanId}) %yellow(%thread) %green(%logger) %msg%n"/>
@@ -54,7 +54,7 @@
         </encoder>
     </appender>
 
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>./${loggingFileName}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>./${loggingFileName}.%d{yyyy-MM-dd}.log</fileNamePattern>
