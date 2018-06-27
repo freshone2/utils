@@ -238,36 +238,15 @@ public class CommodityRedisDao extends BaseRedisDao {
      * @return
      */
     public boolean deductStock(Integer commodityId, Integer specId, String appCode, int num) {
-        String lockKey = buildString(AssemblyRedisDao.LOCK_SPLIT_CODE, AssemblyRedisDao.COMMODITY_LOCK, specId.toString());
-        String lockValue = String.valueOf(System.currentTimeMillis());
         SharingJedisCluster redis = getRedis();
-        JedisClusterPipeline pipeline = null;
-        try {
-            redis.lock(lockKey, lockValue);
             int keySerial = specId / ZIP_LIST_NUM;
             String stockKey = buildString(":", COMMODITY_STOCK_KEY, String.valueOf(keySerial));
-            int stock = NumberUtils.toInt(redis.hget(stockKey, specId.toString()), 0);
-            if (stock <= 0) {
+            Integer result = redis.deductStock(stockKey, specId.toString(),num);
+            if (result == null) {
                 //TODO 后期如果还需要判断预留库存值
                 return false;
             }
-            pipeline = redis.pipelined();
-            pipeline.hincrBy(stockKey, specId.toString(), -num);
-            pipeline.hincrBy(buildString(":", COMMODITY_PREFIX_KEY
-                    , appCode, commodityId.toString()), RedisCommodityBo.PURCHASES_COUNT, num);
-            pipeline.sync();
             return true;
-        }catch (Exception e){
-            LOGGER.error("错误：{}",e);
-            if (pipeline != null) {
-                pipeline.close();
-            }
-            return false;
-        } finally {
-            if (pipeline != null) {
-                pipeline.close();
-            }
-        }
     }
 
     /**
@@ -279,18 +258,11 @@ public class CommodityRedisDao extends BaseRedisDao {
      * @return
      */
     public boolean upsertStock(Integer specId, String appCode, int num) {
-        String lockKey = buildString(AssemblyRedisDao.LOCK_SPLIT_CODE, AssemblyRedisDao.COMMODITY_LOCK, specId.toString());
-        String lockValue = String.valueOf(System.currentTimeMillis());
         SharingJedisCluster redis = getRedis();
-        try {
-            redis.lock(lockKey, lockValue);
-            int keySerial = specId / ZIP_LIST_NUM;
-            String stockKey = buildString(":", COMMODITY_STOCK_KEY, String.valueOf(keySerial));
-            redis.hset(stockKey, specId.toString(), String.valueOf(num));
-            return true;
-        } finally {
-            redis.unlock(lockKey, lockValue);
-        }
+        int keySerial = specId / ZIP_LIST_NUM;
+        String stockKey = buildString(":", COMMODITY_STOCK_KEY, String.valueOf(keySerial));
+        redis.hset(stockKey, specId.toString(), String.valueOf(num));
+        return true;
     }
 
     /**
@@ -302,19 +274,11 @@ public class CommodityRedisDao extends BaseRedisDao {
      * @return
      */
     public boolean increaseStock(Integer specId, String appCode, int num) {
-        String lockKey = buildString(AssemblyRedisDao.LOCK_SPLIT_CODE, AssemblyRedisDao.COMMODITY_LOCK, specId.toString());
-        String lockValue = String.valueOf(System.currentTimeMillis());
         SharingJedisCluster redis = getRedis();
-        try {
-            redis.lock(lockKey, lockValue);
-            int keySerial = specId / ZIP_LIST_NUM;
-            String stockKey = buildString(":", COMMODITY_STOCK_KEY, String.valueOf(keySerial));
-            redis.hincrBy(stockKey, specId.toString(), num);
-
-            return true;
-        } finally {
-            redis.unlock(lockKey, lockValue);
-        }
+        int keySerial = specId / ZIP_LIST_NUM;
+        String stockKey = buildString(":", COMMODITY_STOCK_KEY, String.valueOf(keySerial));
+        redis.hincrBy(stockKey, specId.toString(), num);
+        return true;
     }
 
     /**

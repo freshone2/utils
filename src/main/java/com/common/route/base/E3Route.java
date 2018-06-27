@@ -1,6 +1,7 @@
 package com.common.route.base;
 
 import com.common.model.dto.ResultDTO;
+import com.common.model.dto.pay.PayMessageDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -104,5 +105,26 @@ public interface E3Route {
     @GetMapping(value = "/v1/e3/refund/status")
     ResultDTO queryOrderReturnGoodsStatus(@RequestHeader("requestId") String requestId,@RequestParam("refundOrderId") String refundOrderId);
 
+    /**
+     * 查询用户积分
+     *
+     * @param userId 用户id
+     * @return
+     */
+    @RequestMapping(value = "/v1/crm/getPoint",method = RequestMethod.GET)
+    public ResultDTO findUserPoint(
+            @RequestHeader(value = "requestId",required = false)String requestId,
+            @RequestParam(value = "userId")String userId);
+
+    /**
+     * 核销接口
+     *
+     * @param requestId
+     * @param PayMessageVto
+     * @return
+     */
+    @RequestMapping(value = "/v1/crm/pay",method = RequestMethod.POST)
+    public ResultDTO checkPassWord(@RequestHeader(value = "requestId",required = false)String requestId,
+                                   @RequestBody PayMessageDTO PayMessageVto);
 
 }

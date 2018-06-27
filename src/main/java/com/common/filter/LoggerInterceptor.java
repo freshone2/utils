@@ -16,15 +16,13 @@ import java.util.UUID;
  * @date: 2018/6/4 上午9:51
  */
 public class LoggerInterceptor implements HandlerInterceptor {
-
     public static final String APP_CODE = "appCode";
     public static final String REQUEST_ID = "requestId";
     public static final String INTERFACE_TYPE = "同步";
-    public static final String SERVER_IP = "server";
+//    public static final String SERVER_IP = "server";
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-        System.out.println("dsdsadsadadsadsadsadasdsadsasaasdsadsad");
         String appCode = httpServletRequest.getHeader(APP_CODE);
         String requestId = httpServletRequest.getHeader(REQUEST_ID);
         PingAnLoggerUtils.setAppCode(appCode);
@@ -44,8 +42,8 @@ public class LoggerInterceptor implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest httpServletRequest
             , HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
-        System.out.println("ewewqewqeqwewqeqweqwewqewqwewqewqewqewqewqeqwewq");
-        httpServletResponse.addHeader(SERVER_IP,"ghhjgjgjhghjgjgjgjhgjh");
+//        System.out.println("ewewqewqeqwewqeqweqwewqewqwewqewqewqewqewqeqwewq");
+//        httpServletResponse.addHeader(SERVER_IP,"ghhjgjgjhghjgjgjgjhgjh");
     }
 
     @Override

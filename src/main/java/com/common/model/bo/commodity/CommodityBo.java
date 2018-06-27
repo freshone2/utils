@@ -75,6 +75,8 @@ public class CommodityBo {
 
     private SeriesBo series;
 
+    private Integer currencyType;
+
     private List<CommodityBo> commoditys;
 
     private List<CommodityDetailBo> commodityDetails;
@@ -411,5 +413,13 @@ public class CommodityBo {
 
     public void setPurchasingPlaceType(Integer purchasingPlaceType) {
         this.purchasingPlaceType = purchasingPlaceType;
+    }
+
+    public Integer getCurrencyType() {
+        return currencyType;
+    }
+
+    public void setCurrencyType(Integer currencyType) {
+        this.currencyType = currencyType;
     }
 }

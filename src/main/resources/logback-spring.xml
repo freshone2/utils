@@ -11,9 +11,9 @@
               value="[%d{yyyy-MM-dd HH:mm:ss.SSS} %X{REQUEST_ID} %loggerId %X{last} ${ip} ${appName} %highlight(%-5level) %yellow(%X{X-B3-TraceId}),%green(%X{X-B3-SpanId}),%blue(%X{X-B3-ParentSpanId}) %yellow(%thread) %green(%logger) %msg%n"/>
 
     <appender name="logstash" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/var/log/app/${logstashPath}.log</file>
+        <file>${logstashPath}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/var/log/app/${logstashPath}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${logstashPath}.%d{yyyy-MM-dd}</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
@@ -22,42 +22,43 @@
                     <timeZone>UTC</timeZone>
                 </timestamp>
                 <pattern>
-                    {
-                    "timestamp":"${serverTimestamp}"
-                    "loggerId":"%loggerId",
-                    "from": "%X{FROM}",
-                    "to":"%X{TO}",
-                    "requestId":"%X{REQUEST_ID}",
-                    "interfaceId":"%X{INTERFACE_ID}",
-                    "interfaceName":"%X{INTERFACE_NAME}",
-                    "interfaceType":"%X{INTERFACE_TYPE}",
-                    "appCode":"%X{APP_CODE}",
-                    "requestStatus":"%X{REQUEST_STATUS}",
-                    "responseCode":"%X{RESPONSE_CODE}",
-                    "requestContent":"%X{REQUEST_CONTENT}",
-                    "responseContent":"%X{RESPONSE_CONTENT}",
-                    "startAt":"%X{START_AT}",
-                    "endAt":%X{END_AT},
-                    "serverIp":%X{SERVER_IP},
-                    "app": "${appName}",
-                    "level": "%level",
-                    "trace": "%X{X-B3-TraceId:-}",
-                    "span": "%X{X-B3-SpanId:-}",
-                    "parent": "%X{X-B3-ParentSpanId:-}",
-                    "thread": "%thread",
-                    "class": "%logger{40}",
-                    "message": "%message",
-                    "stack_trace": "%exception{10}"
-                    }
+                    <pattern>
+                        {
+                        "loggerId":"%loggerId",
+                        "from": "%X{FROM}",
+                        "to":"%X{TO}",
+                        "requestId":"%X{REQUEST_ID}",
+                        "interfaceId":"%X{INTERFACE_ID}",
+                        "interfaceName":"%X{INTERFACE_NAME}",
+                        "interfaceType":"%X{INTERFACE_TYPE}",
+                        "appCode":"%X{APP_CODE}",
+                        "requestStatus":"%X{REQUEST_STATUS}",
+                        "responseCode":"%X{RESPONSE_CODE}",
+                        "requestContent":"%X{REQUEST_CONTENT}",
+                        "responseContent":"%X{RESPONSE_CONTENT}",
+                        "startAt":"%X{START_AT}",
+                        "endAt":"%X{END_AT}",
+                        "serverIp":"%X{SERVER_IP}",
+                        "app": "${appName}",
+                        "level": "%level",
+                        "trace": "%X{X-B3-TraceId:-}",
+                        "span": "%X{X-B3-SpanId:-}",
+                        "parent": "%X{X-B3-ParentSpanId:-}",
+                        "thread": "%thread",
+                        "class": "%logger{40}",
+                        "message": "%message",
+                        "stack_trace": "%exception{10}"
+                        }
+                    </pattern>
                 </pattern>
             </providers>
         </encoder>
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./${loggingFileName}.log</file>
+        <file>${loggingFileName}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>./${loggingFileName}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${loggingFileName}.%d{yyyy-MM-dd}</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -92,7 +93,6 @@
     </logger>
 
     <root level="INFO">
-        <appender-ref ref="logstash" />
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE"/>
     </root>

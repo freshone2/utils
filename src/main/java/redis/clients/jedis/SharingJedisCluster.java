@@ -4,16 +4,19 @@ import com.common.model.bo.redis.JedisClusterPipeline;
 import com.common.model.dao.redis.AssemblyRedisDao;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.util.JedisClusterCRC16;
 import redis.clients.util.SafeEncoder;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Package: com.common.model.bo.redis
@@ -22,7 +25,17 @@ import java.util.Set;
  * @date: 2018/5/23 下午3:51
  */
 public class SharingJedisCluster extends JedisCluster {
+    private static final String luaScript = "local value = redis.call('hget', KEYS[1], ARGV[1]) if not value then return false end value = tonumber(value) local decrby = tonumber(ARGV[2]) if value >= decrby then return redis.call('hincrby', KEYS[1], ARGV[1], -decrby) end return false";
+
+    private static JedisSlotBasedConnectionHandler cacheConnectionHandler;
+
+    private static JedisClusterInfoCache cacheClusterInfoCache;
+
+    private static final Map<JedisPool,String> luaOrderMap = new ConcurrentHashMap<>();
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SharingJedisCluster.class);
+
+    private ThreadLocal<JedisClusterPipeline> jedisClusterPipelineThreadLocal = new ThreadLocal<>();
 
     public SharingJedisCluster(HostAndPort node) {
         super(node);
@@ -88,6 +101,45 @@ public class SharingJedisCluster extends JedisCluster {
         super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, poolConfig);
     }
 
+    public void initLuaOrder(){
+         Map<String, JedisPool> nodeMap = getClusterNodes();
+        for (Map.Entry<String,JedisPool> entry : nodeMap.entrySet()){
+            Jedis redis = entry.getValue().getResource();
+            String sha1Key =redis.scriptLoad(luaScript);
+            luaOrderMap.put(entry.getValue(),sha1Key);
+        }
+    }
+
+    public Integer deductStock(String key,String field,Integer num){
+        byte[] bKey = SafeEncoder.encode(key);
+        int slot = JedisClusterCRC16.getSlot(bKey);
+        JedisPool pool = connectionHandler.cache.getSlotPool(slot);
+        Object result = null;
+        Jedis redis = null;
+        try {
+            String luaOrderSha1 = luaOrderMap.get(pool);
+            if (StringUtils.isBlank(luaOrderSha1)){
+                redis = pool.getResource();
+                luaOrderSha1 =redis.scriptLoad(luaScript);
+                luaOrderMap.put(pool,luaOrderSha1);
+            }
+            if (redis == null) {
+                redis = pool.getResource();
+            }
+            result = redis.evalsha(luaOrderSha1,1,key,field,num.toString());
+        }finally {
+            if (redis != null){
+                redis.close();
+            }
+        }
+
+        if (result == null ){
+            return null;
+        }
+        return NumberUtils.toInt(result.toString());
+
+    }
+
     public Set<String> keys(String pattern) {
         Set<String> keys = new HashSet<>();
         Map<String, JedisPool> clusterNodes = this.getClusterNodes();
@@ -105,9 +157,12 @@ public class SharingJedisCluster extends JedisCluster {
     }
 
     public JedisClusterPipeline pipelined(){
-        JedisClusterPipeline pipeline = new JedisClusterPipeline();
-        pipeline.setJedisCluster(this);
-        pipeline.refreshCluster();
+        JedisClusterPipeline pipeline =  jedisClusterPipelineThreadLocal.get();
+        if (pipeline == null) {
+            pipeline = new JedisClusterPipeline();
+            pipeline.setJedisCluster(this);
+        }
+//        pipeline.refreshCluster();
         return pipeline;
     }
 
@@ -165,7 +220,7 @@ public class SharingJedisCluster extends JedisCluster {
                 Thread.sleep(3);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            LOGGER.error("错误:{}",e);
         }
         return false;
     }

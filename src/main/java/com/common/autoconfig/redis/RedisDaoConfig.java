@@ -33,6 +33,7 @@ public class RedisDaoConfig {
     public CommodityRedisDao createdCommodityRedisDao(SharingJedisCluster jedisCluster){
         CommodityRedisDao commodityRedisDao = new CommodityRedisDao();
         commodityRedisDao.setSharingJedisCluster(jedisCluster);
+        jedisCluster.initLuaOrder();
         return commodityRedisDao;
     }
 
