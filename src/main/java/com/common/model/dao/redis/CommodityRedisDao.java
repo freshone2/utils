@@ -242,7 +242,9 @@ public class CommodityRedisDao extends BaseRedisDao {
             int keySerial = specId / ZIP_LIST_NUM;
             String stockKey = buildString(":", COMMODITY_STOCK_KEY, String.valueOf(keySerial));
             Integer result = redis.deductStock(stockKey, specId.toString(),num);
-            if (result == null) {
+            redis.hincrBy(buildString(":", COMMODITY_PREFIX_KEY
+                , appCode, commodityId.toString()), RedisCommodityBo.PURCHASES_COUNT, num);
+        if (result == null) {
                 //TODO 后期如果还需要判断预留库存值
                 return false;
             }
