@@ -151,8 +151,10 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
                     , USER_VIRTUAL_COIN_ACCOUNT_TOTAL_PREFIX, appCode, userId), -usedVirtualCoin);
             pipeline.del(buildString(":"
                     , USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX, appCode, userId));
-            pipeline.hmset(buildString(":"
-                    , USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX, appCode, userId), timeSharingStringMap);
+            if (MapUtils.isNotEmpty(timeSharingStringMap)) {
+                pipeline.hmset(buildString(":"
+                        , USER_VIRTUAL_COIN_ACCOUNT_SHARING_PREFIX, appCode, userId), timeSharingStringMap);
+            }
             List<Object> result = pipeline.syncAndReturnAll();
             if (CollectionUtils.isEmpty(result)) {
                 return null;

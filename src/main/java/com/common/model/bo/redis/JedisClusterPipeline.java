@@ -196,26 +196,18 @@ public class JedisClusterPipeline extends PipelineBase implements Closeable {
     protected Client getClient(byte[] key) {
         Jedis jedis = getJedis(JedisClusterCRC16.getSlot(key));
 
-        long now =System.currentTimeMillis();
         Client client = jedis.getClient();
-        LOGGER.info("jedis.getClient()获取耗时：{}",System.currentTimeMillis()-now);
         clients.add(client);
 
         return client;
     }
 
     private Jedis getJedis(int slot) {
-        long now = System.currentTimeMillis();
         JedisPool pool = clusterInfoCache.getSlotPool(slot);
-        LOGGER.info("JedisPool获取耗时：{}",System.currentTimeMillis()-now);
         // 根据pool从缓存中获取Jedis
-        now = System.currentTimeMillis();
         Jedis jedis = jedisMap.get(pool);
-        LOGGER.info("jedisMap获取耗时：{}",System.currentTimeMillis()-now);
         if (null == jedis) {
-            now = System.currentTimeMillis();
             jedis = pool.getResource();
-            LOGGER.info("pool.getResource()获取耗时：{}",System.currentTimeMillis()-now);
             jedisMap.put(pool, jedis);
         }
 
