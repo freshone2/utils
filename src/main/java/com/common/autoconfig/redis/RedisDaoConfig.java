@@ -1,9 +1,6 @@
 package com.common.autoconfig.redis;
 
-import com.common.model.dao.redis.ActivityRedisDao;
-import com.common.model.dao.redis.CommodityRedisDao;
-import com.common.model.dao.redis.FreightRedisDao;
-import com.common.model.dao.redis.VirtualCoinRedisDao;
+import com.common.model.dao.redis.*;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -51,6 +48,22 @@ public class RedisDaoConfig {
         VirtualCoinRedisDao virtualCoinRedisDao = new VirtualCoinRedisDao();
         virtualCoinRedisDao.setSharingJedisCluster(jedisCluster);
         return virtualCoinRedisDao;
+    }
+
+    @Bean
+    @ConditionalOnProperty(value = "utils.dao.redis.virtualRate.enable",havingValue = "true")
+    public BrandVirtualCoinUsedRateRedisDao createdBrandVirtualCoinUsedRateRedisDao(SharingJedisCluster jedisCluster){
+        BrandVirtualCoinUsedRateRedisDao coinUsedRateRedisDao = new BrandVirtualCoinUsedRateRedisDao();
+        coinUsedRateRedisDao.setSharingJedisCluster(jedisCluster);
+        return coinUsedRateRedisDao;
+    }
+
+    @Bean
+    @ConditionalOnProperty(value = "utils.dao.redis.config.enable",havingValue = "true")
+    public ConfigRedisDao createdConfigRedisDao(SharingJedisCluster jedisCluster){
+        ConfigRedisDao configRedisDao = new ConfigRedisDao();
+        configRedisDao.setSharingJedisCluster(jedisCluster);
+        return configRedisDao;
     }
 
 }

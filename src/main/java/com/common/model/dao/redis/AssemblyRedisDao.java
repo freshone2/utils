@@ -17,8 +17,6 @@ import java.util.List;
  * @author: jklofs
  * @date: 2018/3/30 下午2:37
  */
-@ConditionalOnClass(JedisPool.class)
-@ConditionalOnBean(JedisPool.class)
 public class AssemblyRedisDao extends BaseRedisDao {
 
     public static final int LOCK_DB = 11;

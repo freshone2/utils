@@ -26,8 +26,6 @@ import java.util.Map;
  * @author: jklofs
  * @date: 2018/3/26 上午11:35
  */
-@ConditionalOnClass({AssemblyRedisDao.class, JedisPool.class})
-@ConditionalOnBean({AssemblyRedisDao.class, JedisPool.class})
 public class CommodityRedisDao extends BaseRedisDao {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommodityRedisDao.class);
 

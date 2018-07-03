@@ -11,11 +11,16 @@
               value="[%d{yyyy-MM-dd HH:mm:ss.SSS} %X{REQUEST_ID} %loggerId %X{last} ${ip} ${appName} %highlight(%-5level) %yellow(%X{X-B3-TraceId}),%green(%X{X-B3-SpanId}),%blue(%X{X-B3-ParentSpanId}) %yellow(%thread) %green(%logger) %msg%n"/>
 
     <appender name="logstash" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logstashPath}</file>
+        <file>${logstash.log.file}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logstashPath}.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>${logstash.log.file}.%d{yyyy-MM-dd}</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp key ="serverTimestamp">
@@ -56,11 +61,16 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${loggingFileName}</file>
+        <file>${logging.file}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${loggingFileName}.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>${logging.file}.%d{yyyy-MM-dd}</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
@@ -93,6 +103,7 @@
     </logger>
 
     <root level="INFO">
+        <appender-ref ref="logstash" />
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE"/>
     </root>
