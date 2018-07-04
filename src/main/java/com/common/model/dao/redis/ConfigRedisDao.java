@@ -85,7 +85,7 @@ public class ConfigRedisDao extends BaseRedisDao {
         return null;
     }
 
-    public Object findAppConfig(String appCode){
+    public RedisAppConfigBo findAppConfig(String appCode){
         SharingJedisCluster redis = getRedis();
         String config = redis.hget(APP_CONFIG,appCode);
         if (StringUtils.isBlank(config)){

@@ -9,13 +9,13 @@ import java.util.HashMap;
  * @date: 2018/7/3 下午4:44
  */
 public class RedisAppConfigBo {
-    private boolean huaMeiJiaRegistrationIcon;
+    private Boolean huaMeiJiaRegistrationIcon;
 
-    public boolean isHuaMeiJiaRegistrationIcon() {
+    public Boolean getHuaMeiJiaRegistrationIcon() {
         return huaMeiJiaRegistrationIcon;
     }
 
-    public void setHuaMeiJiaRegistrationIcon(boolean huaMeiJiaRegistrationIcon) {
+    public void setHuaMeiJiaRegistrationIcon(Boolean huaMeiJiaRegistrationIcon) {
         this.huaMeiJiaRegistrationIcon = huaMeiJiaRegistrationIcon;
     }
 
