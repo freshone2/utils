@@ -15,6 +15,24 @@ public class RabbitConfig {
     private String payRoutingKey = "mall_pay_routing";
     private String activityExchange = "mall_activity_exchange";
     private String activityRoutingKey = "mall_activity_routing";
+    private String crmExchange = "mall_crm_exchange";
+    private String crmRoutingKey = "mall_crm_routing";
+
+    public String getCrmExchange() {
+        return crmExchange;
+    }
+
+    public void setCrmExchange(String crmExchange) {
+        this.crmExchange = crmExchange;
+    }
+
+    public String getCrmRoutingKey() {
+        return crmRoutingKey;
+    }
+
+    public void setCrmRoutingKey(String crmRoutingKey) {
+        this.crmRoutingKey = crmRoutingKey;
+    }
 
     public String getOrderExchange() {
         return orderExchange;

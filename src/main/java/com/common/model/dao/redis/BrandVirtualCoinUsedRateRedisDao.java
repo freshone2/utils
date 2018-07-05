@@ -41,6 +41,13 @@ public class BrandVirtualCoinUsedRateRedisDao extends BaseRedisDao{
         return true;
     }
 
+    public boolean removeBrandVirtualCoinUsedRate(String appCode , Integer brandId , Double rate){
+        JedisCluster redis = getRedis();
+        redis.hdel(buildString(":"
+                ,BRAND_VIRTUAL_COIN_USED_RATE_PREFIX,appCode),brandId.toString());
+        return true;
+    }
+
     public boolean upsertAllBrandVirtualCoinUsedRate(String appCode , Map<Integer,Double> rateMap){
         if (MapUtils.isEmpty(rateMap)){
             return true;

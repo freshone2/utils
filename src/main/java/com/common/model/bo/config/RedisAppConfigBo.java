@@ -9,20 +9,40 @@ import java.util.HashMap;
  * @date: 2018/7/3 下午4:44
  */
 public class RedisAppConfigBo {
-    private Boolean huaMeiJiaRegistrationIcon;
+    private Boolean huaMeiJiaRegistrationView;
+    private String huaMeiJiaRegistrationIcon;
+    private String huaMeiJiaRegistrationUrl;
 
-    public Boolean getHuaMeiJiaRegistrationIcon() {
+    public Boolean getHuaMeiJiaRegistrationView() {
+        return huaMeiJiaRegistrationView;
+    }
+
+    public void setHuaMeiJiaRegistrationView(Boolean huaMeiJiaRegistrationView) {
+        this.huaMeiJiaRegistrationView = huaMeiJiaRegistrationView;
+    }
+
+    public String getHuaMeiJiaRegistrationIcon() {
         return huaMeiJiaRegistrationIcon;
     }
 
-    public void setHuaMeiJiaRegistrationIcon(Boolean huaMeiJiaRegistrationIcon) {
+    public void setHuaMeiJiaRegistrationIcon(String huaMeiJiaRegistrationIcon) {
         this.huaMeiJiaRegistrationIcon = huaMeiJiaRegistrationIcon;
+    }
+
+    public String getHuaMeiJiaRegistrationUrl() {
+        return huaMeiJiaRegistrationUrl;
+    }
+
+    public void setHuaMeiJiaRegistrationUrl(String huaMeiJiaRegistrationUrl) {
+        this.huaMeiJiaRegistrationUrl = huaMeiJiaRegistrationUrl;
     }
 
     @Override
     public String toString() {
         return "RedisAppConfigBo{" +
-                "huaMeiJiaRegistrationIcon=" + huaMeiJiaRegistrationIcon +
+                "huaMeiJiaRegistrationView=" + huaMeiJiaRegistrationView +
+                ", huaMeiJiaRegistrationIcon='" + huaMeiJiaRegistrationIcon + '\'' +
+                ", huaMeiJiaRegistrationUrl='" + huaMeiJiaRegistrationUrl + '\'' +
                 '}';
     }
 }

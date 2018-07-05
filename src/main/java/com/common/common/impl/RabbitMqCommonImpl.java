@@ -51,6 +51,11 @@ public class RabbitMqCommonImpl implements RabbitMqCommon {
         return sendMessage(rabbitConfig.getPayExchange(), rabbitConfig.getPayRoutingKey(),content);
     }
 
+    @Override
+    public boolean sendCrmMessage(String content) {
+        return sendMessage(rabbitConfig.getCrmExchange(), rabbitConfig.getCrmRoutingKey(),content);
+    }
+
     private boolean sendMessage(String exchange,String routingKey,String content){
         Message message = MessageBuilder.withBody(content.getBytes())
                 .setContentType(MessageProperties.CONTENT_TYPE_JSON)

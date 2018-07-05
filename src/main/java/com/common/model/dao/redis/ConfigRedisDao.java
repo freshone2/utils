@@ -45,6 +45,12 @@ public class ConfigRedisDao extends BaseRedisDao {
         return true;
     }
 
+    public boolean upsertAppConfig(String appCode, RedisAppConfigBo redisAppConfigBo ){
+        SharingJedisCluster redis = getRedis();
+        redis.hset(APP_CONFIG,appCode,GSON.toJson(redisAppConfigBo));
+        return true;
+    }
+
     public boolean removeAppConfigItem(String appCode,AppConfigEnum appConfigEnum ){
         SharingJedisCluster redis = getRedis();
         String configString = redis.hget(APP_CONFIG,appCode);

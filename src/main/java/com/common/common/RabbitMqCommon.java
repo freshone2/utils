@@ -38,4 +38,12 @@ public interface RabbitMqCommon {
      * @return
      */
     boolean sendActivityMessage(String content);
+
+    /**
+     * 向crm新增轮询
+     *
+     * @param content
+     * @return
+     */
+    boolean sendCrmMessage(String content);
 }
