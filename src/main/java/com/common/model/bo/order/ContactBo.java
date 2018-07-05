@@ -14,6 +14,15 @@ public class ContactBo {
     private String county;
     private String detail;
     private String receiverZip;
+    private Integer sex;
+
+    public Integer getSex() {
+        return sex;
+    }
+
+    public void setSex(Integer sex) {
+        this.sex = sex;
+    }
 
     public String getName() {
         return name;
