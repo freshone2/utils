@@ -115,10 +115,19 @@ public interface MmsRoute {
      * @return
      */
     @RequestMapping(value = "/v1/promotion/activities",method = RequestMethod.GET)
-    public String findPromotionActivities(
+     String findPromotionActivities(
             @RequestHeader("requestId") String requestId,
             @RequestHeader(value = "appCode") String appCode
             , @RequestParam(value = "filter",required = false) String filter
             , @RequestParam(name = "page" ,required = false,defaultValue ="1") Integer page
             , @RequestParam(name = "pageSize" ,required = false,defaultValue ="10")  Integer pageSize);
+
+    /**
+     * 对账单上传
+     *
+     * @param appCode
+     * @return
+     */
+    @RequestMapping(value = "/mms/v1/exchange/upload",method = RequestMethod.GET)
+     String exChangeUpload(@RequestHeader("appCode")String appCode);
 }
