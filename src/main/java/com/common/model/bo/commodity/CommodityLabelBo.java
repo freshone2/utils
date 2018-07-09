@@ -40,4 +40,14 @@ public class CommodityLabelBo {
     public void setLabelName(String labelName) {
         this.labelName = labelName;
     }
+
+    @Override
+    public String toString() {
+        return "CommodityLabelBo{" +
+                "commodityLabelId=" + commodityLabelId +
+                ", commodityId=" + commodityId +
+                ", labelId=" + labelId +
+                ", labelName='" + labelName + '\'' +
+                '}';
+    }
 }

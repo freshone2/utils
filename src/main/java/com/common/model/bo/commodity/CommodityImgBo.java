@@ -30,4 +30,13 @@ public class CommodityImgBo {
     public void setCommodityId(Integer commodityId) {
         this.commodityId = commodityId;
     }
+
+    @Override
+    public String toString() {
+        return "CommodityImgBo{" +
+                "commodityImgId=" + commodityImgId +
+                ", commodityImgUrl='" + commodityImgUrl + '\'' +
+                ", commodityId=" + commodityId +
+                '}';
+    }
 }

@@ -77,4 +77,6 @@ public class RedisPlatformBo extends ProxyHashMap<String,String> {
     public void setTotal(String total) {
         put(TOTAL,total);
     }
+
+
 }

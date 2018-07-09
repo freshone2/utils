@@ -60,4 +60,16 @@ public class CommodityDetailBo {
     public void setCommoditySerial(Integer commoditySerial) {
         this.commoditySerial = commoditySerial;
     }
+
+    @Override
+    public String toString() {
+        return "CommodityDetailBo{" +
+                "commodityDetailId=" + commodityDetailId +
+                ", commodityId=" + commodityId +
+                ", wordDescription='" + wordDescription + '\'' +
+                ", imgDescription='" + imgDescription + '\'' +
+                ", commodityDetailType=" + commodityDetailType +
+                ", commoditySerial=" + commoditySerial +
+                '}';
+    }
 }

@@ -80,4 +80,18 @@ public class SortBo {
     public void setCommodityCount(Integer commodityCount) {
         this.commodityCount = commodityCount;
     }
+
+    @Override
+    public String toString() {
+        return "SortBo{" +
+                "sortId=" + sortId +
+                ", sortName='" + sortName + '\'' +
+                ", parentSortId=" + parentSortId +
+                ", applicationId=" + applicationId +
+                ", isDisappear=" + isDisappear +
+                ", serial='" + serial + '\'' +
+                ", createdAt=" + createdAt +
+                ", commodityCount=" + commodityCount +
+                '}';
+    }
 }

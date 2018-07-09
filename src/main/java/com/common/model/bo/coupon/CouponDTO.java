@@ -41,4 +41,14 @@ public class CouponDTO {
     public void setDistributeTime(Long distributeTime) {
         this.distributeTime = distributeTime;
     }
+
+    @Override
+    public String toString() {
+        return "CouponDTO{" +
+                "couponId=" + couponId +
+                ", activityCouponContentId=" + activityCouponContentId +
+                ", userId='" + userId + '\'' +
+                ", distributeTime=" + distributeTime +
+                '}';
+    }
 }

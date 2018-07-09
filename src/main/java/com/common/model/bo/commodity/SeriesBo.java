@@ -50,4 +50,15 @@ public class SeriesBo {
     public void setCommodityCount(Integer commodityCount) {
         this.commodityCount = commodityCount;
     }
+
+    @Override
+    public String toString() {
+        return "SeriesBo{" +
+                "seriesId=" + seriesId +
+                ", seriesName='" + seriesName + '\'' +
+                ", applicationId=" + applicationId +
+                ", createAt=" + createAt +
+                ", commodityCount=" + commodityCount +
+                '}';
+    }
 }

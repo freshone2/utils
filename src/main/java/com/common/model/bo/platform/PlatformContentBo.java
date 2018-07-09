@@ -152,4 +152,21 @@ public class PlatformContentBo {
     public void setMutex(Integer mutex) {
         this.mutex = mutex;
     }
+
+    @Override
+    public String toString() {
+        return "PlatformContentBo{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", effectiveStartAt=" + effectiveStartAt +
+                ", effectiveEndAt=" + effectiveEndAt +
+                ", preferentialType=" + preferentialType +
+                ", threshold=" + threshold +
+                ", mutex=" + mutex +
+                ", value=" + value +
+                ", maxDiscount=" + maxDiscount +
+                ", appCode='" + appCode + '\'' +
+                ", distributeLimit=" + distributeLimit +
+                '}';
+    }
 }

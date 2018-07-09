@@ -1,5 +1,7 @@
 package com.common.model.bo.commodity;
 
+import java.util.List;
+
 public class CommoditySpecificationBo {
     private Integer commoditySpecificationId;
 
@@ -20,6 +22,8 @@ public class CommoditySpecificationBo {
     private String commoditySpecificationNo;
 
     private String stockNo;
+
+    private List<CommoditySpecificationItemBo> specificationItems;
 
     public Integer getCommoditySpecificationId() {
         return commoditySpecificationId;
@@ -99,5 +103,30 @@ public class CommoditySpecificationBo {
 
     public void setStockNo(String stockNo) {
         this.stockNo = stockNo;
+    }
+
+    public List<CommoditySpecificationItemBo> getSpecificationItems() {
+        return specificationItems;
+    }
+
+    public void setSpecificationItems(List<CommoditySpecificationItemBo> specificationItems) {
+        this.specificationItems = specificationItems;
+    }
+
+    @Override
+    public String toString() {
+        return "CommoditySpecificationBo{" +
+                "commoditySpecificationId=" + commoditySpecificationId +
+                ", sellingPrice=" + sellingPrice +
+                ", originalPrice=" + originalPrice +
+                ", inventory=" + inventory +
+                ", threshold=" + threshold +
+                ", commodityWeight=" + commodityWeight +
+                ", commodityId=" + commodityId +
+                ", basePrice=" + basePrice +
+                ", commoditySpecificationNo='" + commoditySpecificationNo + '\'' +
+                ", stockNo='" + stockNo + '\'' +
+                ", specificationItems=" + specificationItems +
+                '}';
     }
 }

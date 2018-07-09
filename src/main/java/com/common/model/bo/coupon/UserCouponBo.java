@@ -34,4 +34,13 @@ public class UserCouponBo {
     public void setCouponContentBo(ActivityCouponContentBo couponContentBo) {
         this.couponContentBo = couponContentBo;
     }
+
+    @Override
+    public String toString() {
+        return "UserCouponBo{" +
+                "couponId=" + couponId +
+                ", activityCouponId=" + activityCouponId +
+                ", couponContentBo=" + couponContentBo +
+                '}';
+    }
 }

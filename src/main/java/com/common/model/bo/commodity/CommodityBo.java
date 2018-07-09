@@ -422,4 +422,52 @@ public class CommodityBo {
     public void setCurrencyType(Integer currencyType) {
         this.currencyType = currencyType;
     }
+
+    @Override
+    public String toString() {
+        return "CommodityBo{" +
+                "commodityId=" + commodityId +
+                ", commodityName='" + commodityName + '\'' +
+                ", commodityDescription='" + commodityDescription + '\'' +
+                ", commodityCategoryId=" + commodityCategoryId +
+                ", specificationsMore=" + specificationsMore +
+                ", canCheckNum=" + canCheckNum +
+                ", commodityBrandId=" + commodityBrandId +
+                ", commodityBrandName='" + commodityBrandName + '\'' +
+                ", commodityType=" + commodityType +
+                ", canInvoice=" + canInvoice +
+                ", commodityCityId=" + commodityCityId +
+                ", commodityFreightType=" + commodityFreightType +
+                ", returnGoodsType=" + returnGoodsType +
+                ", subType=" + subType +
+                ", subTime=" + subTime +
+                ", createdAt=" + createdAt +
+                ", purchasesCount=" + purchasesCount +
+                ", commodityProvinceId=" + commodityProvinceId +
+                ", commodityNo='" + commodityNo + '\'' +
+                ", clientShow=" + clientShow +
+                ", termValidityFrom=" + termValidityFrom +
+                ", termValidityTo=" + termValidityTo +
+                ", combined=" + combined +
+                ", cancel=" + cancel +
+                ", status=" + status +
+                ", rejectReason='" + rejectReason + '\'' +
+                ", searchKey='" + searchKey + '\'' +
+                ", suspendedHints='" + suspendedHints + '\'' +
+                ", seriesId=" + seriesId +
+                ", purchasingPlaceType=" + purchasingPlaceType +
+                ", purchasingPlaceId=" + purchasingPlaceId +
+                ", bursting=" + bursting +
+                ", syncStock=" + syncStock +
+                ", addibleShoppingCart=" + addibleShoppingCart +
+                ", stockNo='" + stockNo + '\'' +
+                ", series=" + series +
+                ", currencyType=" + currencyType +
+                ", commoditys=" + commoditys +
+                ", commodityDetails=" + commodityDetails +
+                ", commodityImgs=" + commodityImgs +
+                ", commoditySpecifications=" + commoditySpecifications +
+                ", sorts=" + sorts +
+                '}';
+    }
 }

@@ -241,4 +241,28 @@ public class ActivityCouponContentBo {
     public void setMutex(Integer mutex) {
         this.mutex = mutex;
     }
+
+    @Override
+    public String toString() {
+        return "ActivityCouponContentBo{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", distributeStartAt=" + distributeStartAt +
+                ", distributeEndAt=" + distributeEndAt +
+                ", effectiveStartAt=" + effectiveStartAt +
+                ", effectiveEndAt=" + effectiveEndAt +
+                ", termType=" + termType +
+                ", effectiveDay=" + effectiveDay +
+                ", preferentialType=" + preferentialType +
+                ", threshold=" + threshold +
+                ", value=" + value +
+                ", maxDiscount=" + maxDiscount +
+                ", couponType=" + couponType +
+                ", distributeType=" + distributeType +
+                ", appCode='" + appCode + '\'' +
+                ", distributeRange=" + distributeRange +
+                ", distributeLimit=" + distributeLimit +
+                ", mutex=" + mutex +
+                '}';
+    }
 }
