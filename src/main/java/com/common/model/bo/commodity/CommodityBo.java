@@ -77,7 +77,7 @@ public class CommodityBo {
 
     private Integer currencyType;
 
-    private List<CommodityBo> commoditys;
+    private List<RelationCommodityBo> commoditys;
 
     private List<CommodityDetailBo> commodityDetails;
 
@@ -327,11 +327,11 @@ public class CommodityBo {
         this.series = series;
     }
 
-    public List<CommodityBo> getCommoditys() {
+    public List<RelationCommodityBo> getCommoditys() {
         return commoditys;
     }
 
-    public void setCommoditys(List<CommodityBo> commoditys) {
+    public void setCommoditys(List<RelationCommodityBo> commoditys) {
         this.commoditys = commoditys;
     }
 
