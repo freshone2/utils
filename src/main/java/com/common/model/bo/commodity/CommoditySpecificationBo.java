@@ -23,7 +23,7 @@ public class CommoditySpecificationBo {
 
     private String stockNo;
 
-    private List<CommoditySpecificationItemBo> specificationItems;
+    private String specificationName;
 
     public Integer getCommoditySpecificationId() {
         return commoditySpecificationId;
@@ -105,12 +105,12 @@ public class CommoditySpecificationBo {
         this.stockNo = stockNo;
     }
 
-    public List<CommoditySpecificationItemBo> getSpecificationItems() {
-        return specificationItems;
+    public String getSpecificationName() {
+        return specificationName;
     }
 
-    public void setSpecificationItems(List<CommoditySpecificationItemBo> specificationItems) {
-        this.specificationItems = specificationItems;
+    public void setSpecificationName(String specificationName) {
+        this.specificationName = specificationName;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class CommoditySpecificationBo {
                 ", basePrice=" + basePrice +
                 ", commoditySpecificationNo='" + commoditySpecificationNo + '\'' +
                 ", stockNo='" + stockNo + '\'' +
-                ", specificationItems=" + specificationItems +
+                ", specificationName='" + specificationName + '\'' +
                 '}';
     }
 }
