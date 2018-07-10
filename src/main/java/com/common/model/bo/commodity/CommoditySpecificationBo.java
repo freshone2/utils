@@ -25,6 +25,16 @@ public class CommoditySpecificationBo {
 
     private String specificationName;
 
+    private String specificationImageUrl;
+
+    public String getSpecificationImageUrl() {
+        return specificationImageUrl;
+    }
+
+    public void setSpecificationImageUrl(String specificationImageUrl) {
+        this.specificationImageUrl = specificationImageUrl;
+    }
+
     public Integer getCommoditySpecificationId() {
         return commoditySpecificationId;
     }
@@ -127,6 +137,7 @@ public class CommoditySpecificationBo {
                 ", commoditySpecificationNo='" + commoditySpecificationNo + '\'' +
                 ", stockNo='" + stockNo + '\'' +
                 ", specificationName='" + specificationName + '\'' +
+                ", specificationImageUrl='" + specificationImageUrl + '\'' +
                 '}';
     }
 }
