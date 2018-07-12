@@ -27,82 +27,10 @@ import java.util.*;
  * @author: jklofs
  * @date: 2018/5/14 下午2:51
  */
-public class ActivityRedisDao extends BaseRedisDao {
+public class ActivityRedisDao extends BaseActivityRedisDao {
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivityRedisDao.class);
 
-    public static final int ACTIVITY_DB = 5;
 
-    /**
-     * 优惠券key:this+appCode+ID
-     */
-    public static final String COUPON_PREFIX = "a:c";
-
-    /**
-     * 活动关联的商品Key:this+appCode+userID
-     */
-    public static final String ACTIVITY_SPECIFICATION_PREFIX = "a:s";
-
-    /**
-     * 上线的优惠券活动key:this+appCode
-     */
-    public static final String ONLINE_COUPON_ACTIVITY = "ooca";
-
-    /**
-     * 平台活动key:this+appCode+ID
-     */
-    public static final String PLATFORM_PREFIX = "a:p";
-
-    /**
-     * 上线的平台活动key:this+appCode
-     */
-    public static final String ONLINE_PLATFORM_ACTIVITY = "oopa";
-
-    /**
-     * 规格反向关联活动key:this+appCode+规格ID
-     */
-    public static final String SPECIFICATION_ACTIVITY_PREFIX = "s:a";
-
-    /**
-     * 用户优惠券列表key:this+appCode+userId
-     */
-    public static final String USER_COUPON = "u:c";
-
-    public static final String USER_COUPON_SPLIT_CODE = "-";
-
-    public static final String USER_COUPON_USED_SUFFIX = "used";
-
-    public static final String USER_COUPON_OVERTIME_SUFFIX = "overtime";
-
-    /**
-     * 券ID自增
-     */
-    public static final String COUPON_ID_PREFIX = "c:i";
-
-    /**
-     * 用户券领取次数：this+券类型ID+userId
-     */
-    public static final String COUPON_USER_GIVE = "c:g";
-
-    /**
-     * 用户参与平台活动次数：this+平台活动ID+userId
-     */
-    public static final String PLATFORM_USER_USED = "p:g";
-
-    public static final String USER_COUPON_GIVE_TOTAL = "total";
-
-    public static final String USER_PLATFORM_TOTAL = "total";
-
-    /**
-     * 限时折扣：this+appCode+商品ID
-     */
-    public static final String SPECIAL_ACTIVITY_PREFIX = "a:sp";
-
-    /**
-     * 用户参与限时折扣次数：this+appCode+商品ID
-     */
-    public static final String USER_SPECIAL_COMMODITY_PREFIX = "u:sp";
-
-    public static final String USER_SPECIAL_COMMODITY_SPLIT_CODE = "-";
 
     /**
      * 更新或新增优惠券
@@ -282,88 +210,6 @@ public class ActivityRedisDao extends BaseRedisDao {
     }
 
     /**
-     * 判断商品是否存在于某活动
-     *
-     * @param appCode
-     * @param activityId
-     * @param specIds
-     * @return
-     */
-    public Map<Integer,Boolean> existSpecIds(String appCode, Integer activityId, Integer... specIds){
-        SharingJedisCluster redis = getRedis();
-        JedisClusterPipeline pipeline = redis.pipelined();
-        try{
-            for (Integer specId : specIds) {
-                pipeline.sismember(buildString(":", ACTIVITY_SPECIFICATION_PREFIX
-                        , appCode, activityId.toString()),specId.toString());
-            }
-            List<Object> response = pipeline.syncAndReturnAll();
-            if (CollectionUtils.isEmpty(response)){
-                return null;
-            }
-            Map<Integer,Boolean> result = new HashMap<>(response.size());
-            for (int i = 0 ; i < specIds.length;i++ ) {
-                result.put( specIds[i] , (Boolean) response.get(i) );
-            }
-            return result;
-        }catch (Exception e){
-            LOGGER.error("错误：{}",e);
-            if (pipeline != null) {
-                pipeline.close();
-            }
-            return null;
-        }
-    }
-
-    /**
-     * 判断多个活动对象存在的规格值
-     *
-     * @param appCode
-     * @param activityMap
-     * @return
-     */
-    public Map< Integer , Map<Integer,Boolean> > existActivitySpecIds(String appCode, Map<Integer,List<Integer>> activityMap){
-        SharingJedisCluster redis = getRedis();
-        JedisClusterPipeline pipeline = redis.pipelined();
-        try{
-            Map<Integer,Map<Integer,Response<Boolean>>> responseMap = new HashMap<>(activityMap.size());
-            for (Map.Entry<Integer , List<Integer> > entry : activityMap.entrySet() ){
-                Map<Integer,Response<Boolean>> item = new HashMap<>(entry.getValue().size());
-                responseMap.put(entry.getKey(),item);
-                for (Integer specId : entry.getValue()) {
-                    Response<Boolean> response = pipeline.sismember(buildString(":", ACTIVITY_SPECIFICATION_PREFIX
-                            , appCode, entry.getKey().toString()), specId.toString());
-                    item.put(specId,response);
-                }
-            }
-            pipeline.sync();
-
-            Map<Integer,Map<Integer,Boolean>> result = new HashMap<>(responseMap.size());
-            for (Map.Entry<Integer , Map<Integer,Response<Boolean>> > entry
-                    : responseMap.entrySet()) {
-                Map<Integer,Boolean> item = new HashMap<>(entry.getValue().size());
-                result.put(entry.getKey(),item);
-                for (Map.Entry<Integer,Response<Boolean>> responseEntry : entry.getValue().entrySet()) {
-                    if (responseEntry.getValue() == null){
-                        item.put(responseEntry.getKey(),null);
-                    }else {
-                        item.put(responseEntry.getKey(),responseEntry.getValue().get());
-                    }
-
-                }
-            }
-
-            return result;
-        }catch (Exception e){
-            LOGGER.error("错误：{}",e);
-            if (pipeline != null) {
-                pipeline.close();
-            }
-            return null;
-        }
-    }
-
-    /**
      * 递增红包活动值
      *
      * @param appCode
@@ -423,43 +269,4 @@ public class ActivityRedisDao extends BaseRedisDao {
             return false;
         }
     }
-
-    private boolean offlineActivityBo(String appCode,Integer activityId
-            ,String activityPrefix
-            ,String onlinePrefix ){
-        SharingJedisCluster redis = getRedis();
-        String activityKey = buildString(":",ACTIVITY_SPECIFICATION_PREFIX,appCode,activityId.toString());
-        Set<String> specSet = redis.smembers(activityKey);
-        JedisClusterPipeline pipeline = redis.pipelined();
-        try{
-            pipeline.srem(buildString(":",onlinePrefix,appCode)
-                    ,buildString(":",activityPrefix,appCode,activityId.toString()));
-            for (String specString : specSet){
-                pipeline.srem(buildString(":",SPECIFICATION_ACTIVITY_PREFIX,appCode,specString)
-                        ,activityKey);
-            }
-            List<Object> result = pipeline.syncAndReturnAll();
-            if (CollectionUtils.isEmpty(result)){
-                return false;
-            }
-            return true;
-        }finally {
-            if (pipeline != null) {
-                pipeline.close();
-            }
-            return false;
-        }
-    }
-
-    private  <T> T findActivityBo(String appCode, Integer activityId
-            ,String activityPrefix ,Class<T> tClass){
-        SharingJedisCluster redis = getRedis();
-        String content = redis.hget(buildString(":",activityPrefix,appCode,activityId.toString()),RedisActivityCouponBo.CONTENT);
-        if (StringUtils.isEmpty(content)){
-            return null;
-        }
-        return GSON.fromJson(content,tClass);
-    }
-
-
 }
