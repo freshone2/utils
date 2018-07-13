@@ -67,8 +67,6 @@ public class CommodityBo {
 
     private Boolean bursting;
 
-    private Boolean syncStock;
-
     private Boolean addibleShoppingCart;
 
     private String stockNo;
@@ -391,14 +389,6 @@ public class CommodityBo {
         this.bursting = bursting;
     }
 
-    public Boolean getSyncStock() {
-        return syncStock;
-    }
-
-    public void setSyncStock(Boolean syncStock) {
-        this.syncStock = syncStock;
-    }
-
     public Boolean getAddibleShoppingCart() {
         return addibleShoppingCart;
     }
@@ -458,7 +448,6 @@ public class CommodityBo {
                 ", purchasingPlaceType=" + purchasingPlaceType +
                 ", purchasingPlaceId=" + purchasingPlaceId +
                 ", bursting=" + bursting +
-                ", syncStock=" + syncStock +
                 ", addibleShoppingCart=" + addibleShoppingCart +
                 ", stockNo='" + stockNo + '\'' +
                 ", series=" + series +

@@ -21,6 +21,8 @@ public class CommoditySpecificationBo {
 
     private String commoditySpecificationNo;
 
+    private Boolean syncStock;
+
     private String stockNo;
 
     private String specificationName;
@@ -123,6 +125,14 @@ public class CommoditySpecificationBo {
         this.specificationName = specificationName;
     }
 
+    public Boolean getSyncStock() {
+        return syncStock;
+    }
+
+    public void setSyncStock(Boolean syncStock) {
+        this.syncStock = syncStock;
+    }
+
     @Override
     public String toString() {
         return "CommoditySpecificationBo{" +
@@ -135,6 +145,7 @@ public class CommoditySpecificationBo {
                 ", commodityId=" + commodityId +
                 ", basePrice=" + basePrice +
                 ", commoditySpecificationNo='" + commoditySpecificationNo + '\'' +
+                ", syncStock=" + syncStock +
                 ", stockNo='" + stockNo + '\'' +
                 ", specificationName='" + specificationName + '\'' +
                 ", specificationImageUrl='" + specificationImageUrl + '\'' +
