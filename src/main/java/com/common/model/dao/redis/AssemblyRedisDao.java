@@ -23,9 +23,9 @@ public class AssemblyRedisDao extends BaseRedisDao {
 
     public static final int ORDER_DB = 11;
 
-    public static final int DEFAULT_EXPIRE = 1;
+    public static final long DEFAULT_EXPIRE = 1000L;
 
-    public static final long DEFAULT_TIMEOUT = 1000;
+    public static final long DEFAULT_TIMEOUT = 1000L;
 
     public static final String LOCK_SPLIT_CODE = ":";
 

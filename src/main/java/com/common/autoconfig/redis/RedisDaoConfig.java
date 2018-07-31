@@ -66,4 +66,12 @@ public class RedisDaoConfig {
         return configRedisDao;
     }
 
+    @Bean
+    @ConditionalOnProperty(value = "utils.dao.redis.buyGift.enable",havingValue = "true")
+    public BuyGiftRedisDao createdBuyGiftRedisDao(SharingJedisCluster jedisCluster){
+        BuyGiftRedisDao configRedisDao = new BuyGiftRedisDao();
+        configRedisDao.setSharingJedisCluster(jedisCluster);
+        return configRedisDao;
+    }
+
 }

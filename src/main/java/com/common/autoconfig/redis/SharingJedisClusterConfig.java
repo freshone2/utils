@@ -67,6 +67,9 @@ public class SharingJedisClusterConfig {
     @Value("${utils.redis.connectionTimeout:1000}")
     private int connectionTimeout;
 
+    @Value("${spring.cloud.client.ipAddress:localhost}")
+    private String localServerIp;
+
     @Bean
     public SharingJedisCluster createdSharingJedisCluster(){
         LOGGER.info("{},{}",timeout,maxAttempts);
@@ -91,9 +94,9 @@ public class SharingJedisClusterConfig {
         SharingJedisCluster cluster = null;
         if ( StringUtils.isNotBlank(password)){
             LOGGER.info("密码:{}",password);
-            cluster = new SharingJedisCluster(nodeSet,connectionTimeout,timeout,maxAttempts,password,jedisPoolConfig);
+            cluster = new SharingJedisCluster(nodeSet,connectionTimeout,timeout,maxAttempts,password,jedisPoolConfig,localServerIp);
         }else {
-            cluster = new SharingJedisCluster(nodeSet, connectionTimeout, timeout, maxAttempts, jedisPoolConfig);
+            cluster = new SharingJedisCluster(nodeSet, connectionTimeout, timeout, maxAttempts, jedisPoolConfig,localServerIp);
         }
         return cluster;
     }
