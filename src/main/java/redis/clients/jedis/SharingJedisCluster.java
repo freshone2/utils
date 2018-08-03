@@ -167,6 +167,36 @@ public class SharingJedisCluster extends JedisCluster {
         return NumberUtils.toInt(result.toString());
     }
 
+    public Integer deductStock(String key,String field,Integer num){
+        byte[] bKey = SafeEncoder.encode(key);
+        int slot = JedisClusterCRC16.getSlot(bKey);
+        JedisPool pool = connectionHandler.cache.getSlotPool(slot);
+        Object result = null;
+        Jedis redis = null;
+        try {
+            String luaOrderSha1 = luaOrderMap.get(pool);
+            if (StringUtils.isBlank(luaOrderSha1)){
+                redis = pool.getResource();
+                luaOrderSha1 =redis.scriptLoad(luaOrderScript);
+                luaOrderMap.put(pool,luaOrderSha1);
+            }
+            if (redis == null) {
+                redis = pool.getResource();
+            }
+            result = redis.evalsha(luaOrderSha1,1,key,field,num.toString());
+        }finally {
+            if (redis != null){
+                redis.close();
+            }
+        }
+
+        if (result == null ){
+            return null;
+        }
+        return NumberUtils.toInt(result.toString());
+
+    }
+
     public Integer lockStock(String key,Map<String,Integer> stockMap){
         //TODO 锁库存lua脚本
         Object result = evalScriptSha(key,luaLockStockMap,luaLockStockScript,GSON.toJson(stockMap));

@@ -11,6 +11,8 @@ import java.util.Map;
 public class AppStockUpsertBo {
     private Integer specId;
 
+    private String appCode;
+
     private Integer shareStock;
 
     private Integer platformStock;
@@ -25,6 +27,14 @@ public class AppStockUpsertBo {
 
     public void setSpecId(Integer specId) {
         this.specId = specId;
+    }
+
+    public String getAppCode() {
+        return appCode;
+    }
+
+    public void setAppCode(String appCode) {
+        this.appCode = appCode;
     }
 
     public Integer getShareStock() {
