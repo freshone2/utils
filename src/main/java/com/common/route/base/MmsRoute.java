@@ -130,4 +130,41 @@ public interface MmsRoute {
      */
     @RequestMapping(value = "/mms/v1/exchange/upload",method = RequestMethod.GET)
      String exChangeUpload(@RequestHeader("appCode")String appCode);
+
+    /**
+     * 买赠活动上线
+     * @param requestId
+     * @param taskDTO
+     * @return
+     */
+    @RequestMapping(value = "/buyGift/online",method = RequestMethod.PUT)
+    ResultDTO onlineBuyGift(@RequestHeader(value = "requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
+
+    /**
+     * 买赠活动下线
+     * @param requestId
+     * @param taskDTO
+     * @return
+     */
+    @RequestMapping(value = "/buyGift/offline",method = RequestMethod.PUT)
+    ResultDTO offlineBuyGift(@RequestHeader(value = "requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
+
+    /**
+     * 更新预售活动状态
+     * @param requestId
+     * @param taskDTO
+     * @return
+     */
+    @RequestMapping(value = "/preSale/status",method = RequestMethod.PUT)
+    ResultDTO updatePreSaleStatus(@RequestHeader(value = "requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
+
+    /**
+     * 更新预售活动阶段
+     * @param requestId
+     * @param taskDTO
+     * @return
+     */
+    @RequestMapping(value = "/preSale/stage",method = RequestMethod.PUT)
+    ResultDTO updatePreSaleStage(@RequestHeader(value = "requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
+
 }

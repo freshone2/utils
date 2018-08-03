@@ -6,7 +6,7 @@
 
     <groupId>com.common</groupId>
     <artifactId>utils</artifactId>
-    <version>4.3.3-SNAPSHOT</version>
+    <version>4.3.4-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
