@@ -82,5 +82,13 @@ public class RedisDaoConfig {
         return stockRedisDao;
     }
 
+    @Bean
+    @ConditionalOnProperty(value = "utils.dao.redis.preSale.enable",havingValue = "true")
+    public PreSaleRedisDao createdPreSaleRedisDao(SharingJedisCluster jedisCluster){
+        PreSaleRedisDao preSaleRedisDao = new PreSaleRedisDao();
+        preSaleRedisDao.setSharingJedisCluster(jedisCluster);
+        return preSaleRedisDao;
+    }
+
 
 }

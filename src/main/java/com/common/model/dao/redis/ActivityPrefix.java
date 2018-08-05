@@ -91,4 +91,10 @@ public interface ActivityPrefix {
      * 上线的买赠活动key:this+id
      */
     String ONLINE_BUY_GIFT_ACTIVITY = "obga";
+
+    String PRE_SALE_ACTIVITY_PREFIX="a:ps";
+
+    String PRE_SALE_ACTIVITY_CONTENT_PREFIX="a:ps:con";
+
+    String ONLINE_PRE_SALE_ACTIVITY="opsa";
 }

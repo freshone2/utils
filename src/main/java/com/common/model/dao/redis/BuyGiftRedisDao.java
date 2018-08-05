@@ -65,7 +65,7 @@ public class BuyGiftRedisDao extends BaseActivityRedisDao {
                                 ,String.valueOf(activityBo.getID()).toString()));
             }
             pipeline.sadd(buildString(":",ONLINE_BUY_GIFT_ACTIVITY,activityBo.getAppCode())
-                    ,buildString(":",BUY_GIFT_ACTIVITY_PREFIX, String.valueOf(activityBo.getID())));
+                    ,buildString(":",BUY_GIFT_ACTIVITY_PREFIX, activityBo.getAppCode(),String.valueOf(activityBo.getID())));
             pipeline.sync();
         }finally {
             if (pipeline != null){
