@@ -75,6 +75,12 @@ public class CommodityBo {
 
     private Integer currencyType;
 
+    private Integer prepack;
+
+    private String prepackCode;
+
+    private Integer prepackNum;
+
     private List<RelationCommodityBo> commoditys;
 
     private List<CommodityDetailBo> commodityDetails;
@@ -413,6 +419,30 @@ public class CommodityBo {
         this.currencyType = currencyType;
     }
 
+    public Integer getPrepack() {
+        return prepack;
+    }
+
+    public void setPrepack(Integer prepack) {
+        this.prepack = prepack;
+    }
+
+    public String getPrepackCode() {
+        return prepackCode;
+    }
+
+    public void setPrepackCode(String prepackCode) {
+        this.prepackCode = prepackCode;
+    }
+
+    public Integer getPrepackNum() {
+        return prepackNum;
+    }
+
+    public void setPrepackNum(Integer prepackNum) {
+        this.prepackNum = prepackNum;
+    }
+
     @Override
     public String toString() {
         return "CommodityBo{" +
@@ -452,6 +482,9 @@ public class CommodityBo {
                 ", stockNo='" + stockNo + '\'' +
                 ", series=" + series +
                 ", currencyType=" + currencyType +
+                ", prepack=" + prepack +
+                ", prepackCode='" + prepackCode + '\'' +
+                ", prepackNum=" + prepackNum +
                 ", commoditys=" + commoditys +
                 ", commodityDetails=" + commodityDetails +
                 ", commodityImgs=" + commodityImgs +

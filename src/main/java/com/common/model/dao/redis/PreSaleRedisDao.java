@@ -84,4 +84,6 @@ public class PreSaleRedisDao extends BaseActivityRedisDao {
                 ,appCode , String.valueOf(activityId)),RedisPreSaleActivityBo.STAGE,String.valueOf(stage));
         return true;
     }
+
+
 }
