@@ -81,6 +81,8 @@ public class CommodityBo {
 
     private Integer prepackNum;
 
+    private Double commissionRate;
+
     private List<RelationCommodityBo> commoditys;
 
     private List<CommodityDetailBo> commodityDetails;
@@ -443,6 +445,14 @@ public class CommodityBo {
         this.prepackNum = prepackNum;
     }
 
+    public Double getCommissionRate() {
+        return commissionRate;
+    }
+
+    public void setCommissionRate(Double commissionRate) {
+        this.commissionRate = commissionRate;
+    }
+
     @Override
     public String toString() {
         return "CommodityBo{" +
@@ -485,6 +495,7 @@ public class CommodityBo {
                 ", prepack=" + prepack +
                 ", prepackCode='" + prepackCode + '\'' +
                 ", prepackNum=" + prepackNum +
+                ", commissionRate=" + commissionRate +
                 ", commoditys=" + commoditys +
                 ", commodityDetails=" + commodityDetails +
                 ", commodityImgs=" + commodityImgs +
