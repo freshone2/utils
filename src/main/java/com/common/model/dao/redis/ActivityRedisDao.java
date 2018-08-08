@@ -210,6 +210,38 @@ public class ActivityRedisDao extends BaseActivityRedisDao {
     }
 
     /**
+     * 查询规格参加的活动
+     *
+     * @param appCode 渠道code
+     * @param specIds 规格ids
+     * @return
+     */
+    public Map<Integer,Set<String>> findSpecJoinActivities(String appCode,List<Integer> specIds) {
+        SharingJedisCluster redis = getRedis();
+        JedisClusterPipeline pipeline = null;
+        try {
+            Map<Integer,Response<Set<String>>> responseMap = new HashMap<>(specIds.size());
+            pipeline = redis.pipelined();
+            for (Integer specId : specIds) {
+                Response<Set<String>> response = pipeline.smembers(buildString(":",SPECIFICATION_ACTIVITY_PREFIX,appCode,specId.toString()));
+                responseMap.put(specId,response);
+            }
+            pipeline.sync();
+            Map<Integer,Set<String>> result = new HashMap<>(specIds.size());
+            for (Map.Entry<Integer,Response<Set<String>>> entry : responseMap.entrySet()) {
+                result.put(entry.getKey(),entry.getValue().get());
+            }
+            return result;
+        }catch (Exception e){
+            LOGGER.error("redis报错：{}",e);
+            if (pipeline != null) {
+                pipeline.close();
+            }
+            return null;
+        }
+    }
+
+    /**
      * 递增红包活动值
      *
      * @param appCode
