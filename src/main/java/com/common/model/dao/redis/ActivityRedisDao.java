@@ -241,6 +241,7 @@ public class ActivityRedisDao extends BaseActivityRedisDao {
         }
     }
 
+
     /**
      * 递增红包活动值
      *
