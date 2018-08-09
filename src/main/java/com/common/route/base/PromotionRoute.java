@@ -3,6 +3,8 @@ package com.common.route.base;
 import com.common.model.bo.commodity.CommodityBo;
 import com.common.model.bo.order.OrderBo;
 import com.common.model.dto.ResultDTO;
+import com.common.model.dto.activity.ActivityCartSpecDTO;
+import com.common.model.dto.commodity.SpecDTO;
 import com.common.model.dto.order.CalculatingDTO;
 import com.common.model.dto.promotion.DistributeListVirtualCoinDTO;
 import com.common.model.dto.promotion.DistributeVirtualCoinDTO;
@@ -106,4 +108,16 @@ public interface PromotionRoute {
     ResultDTO<List<CommodityBo>> createdSpecialActivityWithCommodities(@RequestHeader("requestId") String requestId,@RequestHeader("userId") String userId
             , @RequestHeader("appCode") String appCode, @RequestBody List<CommodityBo> commodities);
 
+    /**
+     * 获取规格列表的满减活动
+     *
+     * @param requestId
+     * @param userId
+     * @param specDTO
+     * @return
+     */
+    @GetMapping("/platform/activity/specs")
+    ResultDTO<ActivityCartSpecDTO> findSpecJoinActivities(@RequestHeader(value = "requestId",required = false)String requestId,
+                                                          @RequestHeader(value = "userId")String userId,
+                                                          @RequestBody SpecDTO specDTO);
 }
