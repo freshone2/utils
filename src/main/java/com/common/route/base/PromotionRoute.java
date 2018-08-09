@@ -11,6 +11,7 @@ import com.common.model.dto.promotion.DistributeVirtualCoinDTO;
 import com.common.model.dto.promotion.RestorationCoinDTO;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.POST;
 import java.text.ParseException;
 import java.util.List;
 
@@ -116,7 +117,7 @@ public interface PromotionRoute {
      * @param specDTO
      * @return
      */
-    @GetMapping("/platform/activity/specs")
+    @PostMapping("/platform/activity/specs")
     ResultDTO<ActivityCartSpecDTO> findSpecJoinActivities(@RequestHeader(value = "requestId",required = false)String requestId,
                                                           @RequestHeader(value = "userId")String userId,
                                                           @RequestBody SpecDTO specDTO);
