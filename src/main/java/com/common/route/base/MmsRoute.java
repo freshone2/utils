@@ -47,6 +47,13 @@ public interface MmsRoute {
     ResultDTO onlineCommodity(@RequestHeader("requestId") String requestId,@RequestBody TaskDTO taskDTO);
 
     /**
+     * 商品下架
+     * @return
+     */
+    @RequestMapping(value = "/v1/commodity/offline", method = RequestMethod.PUT)
+    ResultDTO offlineCommodity(@RequestHeader("requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
+
+    /**
      * 商品数据更新
      * @return
      */
@@ -95,7 +102,7 @@ public interface MmsRoute {
     @RequestMapping(value = "/integral/publish",method = RequestMethod.PUT)
     public ResultDTO<Boolean> integralPublish(@RequestHeader("requestId") String requestId,@RequestBody IntegralPublishDTO data);
 
-    @RequestMapping(value = "/v1/commodity/offline", method = RequestMethod.PUT)
+    @RequestMapping(value = "/v1/combination/offline", method = RequestMethod.PUT)
     ResultDTO offlineCombination(@RequestHeader("requestId") String requestId,@RequestBody TaskDTO<String> taskDTO);
 
     /**
@@ -137,7 +144,7 @@ public interface MmsRoute {
      * @param taskDTO
      * @return
      */
-    @RequestMapping(value = "/buyGift/online",method = RequestMethod.PUT)
+    @RequestMapping(value = "/v1/buyGift/online",method = RequestMethod.PUT)
     ResultDTO onlineBuyGift(@RequestHeader(value = "requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
 
     /**
@@ -146,7 +153,7 @@ public interface MmsRoute {
      * @param taskDTO
      * @return
      */
-    @RequestMapping(value = "/buyGift/offline",method = RequestMethod.PUT)
+    @RequestMapping(value = "/v1/buyGift/offline",method = RequestMethod.PUT)
     ResultDTO offlineBuyGift(@RequestHeader(value = "requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
 
     /**
@@ -155,7 +162,7 @@ public interface MmsRoute {
      * @param taskDTO
      * @return
      */
-    @RequestMapping(value = "/preSale/status",method = RequestMethod.PUT)
+    @RequestMapping(value = "/v1/preSale/status",method = RequestMethod.PUT)
     ResultDTO updatePreSaleStatus(@RequestHeader(value = "requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
 
     /**
@@ -164,7 +171,7 @@ public interface MmsRoute {
      * @param taskDTO
      * @return
      */
-    @RequestMapping(value = "/preSale/stage",method = RequestMethod.PUT)
+    @RequestMapping(value = "/v1/preSale/stage",method = RequestMethod.PUT)
     ResultDTO updatePreSaleStage(@RequestHeader(value = "requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
 
 }
