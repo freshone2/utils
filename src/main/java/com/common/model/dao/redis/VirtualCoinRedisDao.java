@@ -131,7 +131,7 @@ public class VirtualCoinRedisDao extends BaseRedisDao {
                 if (usedVirtualCoinBig.compareTo(timeCoinValue) == -1) {
                     entry.setValue(timeCoinValue.subtract(usedVirtualCoinBig)
                             .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                    timeSharingItem.setVirtualCoin(usedVirtualCoin);
+                    timeSharingItem.setVirtualCoin(usedVirtualCoinBig.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
                     timeSharingStringMap.put(entry.getKey().toString()
                             , timeCoinValue.subtract(usedVirtualCoinBig)
                                     .setScale(2, BigDecimal.ROUND_HALF_UP).toString());
