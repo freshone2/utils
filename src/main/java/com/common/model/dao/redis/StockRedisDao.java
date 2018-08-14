@@ -25,18 +25,18 @@ public class StockRedisDao extends BaseRedisDao {
      *
      * @return
      */
-    public int deductStock(String appCode, Map<Integer,Integer> specIdStockMap) {
+    public int deductStock(String appCode, Map<Integer, Integer> specIdStockMap) {
         SharingJedisCluster redis = getRedis();
         //TODO 扣减库存传参逻辑变更
-        redis.deductStock(appCode,null);
+        redis.deductStock(appCode, null);
         return 0;
     }
 
-    public int lockStock(String appCode, Map<Integer,Integer> specIdStockMap
-            ,Map<Integer,Integer> activityStockMap){
+    public int lockStock(String appCode, Map<Integer, Integer> specIdStockMap
+            , Map<Integer, Integer> activityStockMap) {
         //TODO 锁库存
         SharingJedisCluster redis = getRedis();
-        redis.lockStock(appCode,null);
+        redis.lockStock(appCode, null);
         return 0;
     }
 
@@ -45,8 +45,8 @@ public class StockRedisDao extends BaseRedisDao {
      *
      * @return
      */
-    public boolean upsertStock(AppStockUpsertBo appStockUpsertBo){
-        Map<String,String> setMap = new LinkedHashMap<>();
+    public boolean upsertStock(AppStockUpsertBo appStockUpsertBo) {
+        Map<String, String> setMap = new LinkedHashMap<>();
 
         if (null != appStockUpsertBo.getShareStock()) {
             setMap.put(buildString("-", appStockUpsertBo
@@ -58,44 +58,45 @@ public class StockRedisDao extends BaseRedisDao {
 //                    .getSpecId().toString(), "platform"), appStockUpsertBo.getPlatformStock().toString());
 //        }
 
-        if (MapUtils.isNotEmpty(appStockUpsertBo.getExclusiveStockMap())){
-            for (Map.Entry<String,Integer> entry : appStockUpsertBo
-                    .getExclusiveStockMap().entrySet()){
-                setMap.put(buildString("-",appStockUpsertBo
-                        .getSpecId().toString(),appStockUpsertBo.getAppCode(),entry.getKey()),entry.getValue().toString());
+        if (MapUtils.isNotEmpty(appStockUpsertBo.getExclusiveStockMap())) {
+            for (Map.Entry<String, Integer> entry : appStockUpsertBo
+                    .getExclusiveStockMap().entrySet()) {
+                setMap.put(buildString("-", appStockUpsertBo
+                        .getSpecId().toString(), appStockUpsertBo.getAppCode(), entry.getKey()), entry.getValue().toString());
             }
         }
 
-        if (MapUtils.isNotEmpty(appStockUpsertBo.getActivityStockMap())){
-            for (Map.Entry<Integer,Integer> entry : appStockUpsertBo
-                    .getActivityStockMap().entrySet()){
-                setMap.put(buildString("-",appStockUpsertBo
-                        .getSpecId().toString(),appStockUpsertBo.getAppCode(),"activity",entry.getKey().toString()),entry.getValue().toString());
+        if (MapUtils.isNotEmpty(appStockUpsertBo.getActivityStockMap())) {
+            for (Map.Entry<Integer, Integer> entry : appStockUpsertBo
+                    .getActivityStockMap().entrySet()) {
+                setMap.put(buildString("-", appStockUpsertBo
+                        .getSpecId().toString(), appStockUpsertBo.getAppCode(), "activity", entry.getKey().toString()), entry.getValue().toString());
             }
         }
 
         SharingJedisCluster redis = getRedis();
-        String result=redis.hmset(STOCK_KEY,setMap);
+        String result = redis.hmset(STOCK_KEY, setMap);
         return "OK".equalsIgnoreCase(result);
     }
 
     /**
      * 更新渠道库存
+     *
      * @param appCode
      * @param specIdStockMap
      * @return
      */
-    public boolean upsertAppStock(String appCode,Map<Integer,Integer> specIdStockMap){
-        Map<String,String> setMap = new LinkedHashMap<>();
+    public boolean upsertAppStock(String appCode, Map<Integer, Integer> specIdStockMap) {
+        Map<String, String> setMap = new LinkedHashMap<>();
 
         if (null != specIdStockMap) {
-            for (Map.Entry<Integer,Integer> entry : specIdStockMap.entrySet()) {
+            for (Map.Entry<Integer, Integer> entry : specIdStockMap.entrySet()) {
                 setMap.put(buildString("-", entry.getKey().toString(), appCode), entry.getValue().toString());
             }
         }
-        if(MapUtils.isNotEmpty(setMap)){
+        if (MapUtils.isNotEmpty(setMap)) {
             SharingJedisCluster redis = getRedis();
-            String result=redis.hmset(STOCK_KEY,setMap);
+            String result = redis.hmset(STOCK_KEY, setMap);
             return "OK".equalsIgnoreCase(result);
         }
         return true;
@@ -103,76 +104,83 @@ public class StockRedisDao extends BaseRedisDao {
 
     /**
      * 查找仓库下的规格库存
+     *
      * @param warehouseCode
      * @param specIds
      * @return
      */
-    public Map<Integer, Integer> findPlatformStocks(List<String> warehouseCode,List<Integer> specIds){
-        if(CollectionUtils.isEmpty(warehouseCode)||CollectionUtils.isEmpty(specIds)){
+    public Map<Integer, Integer> findPlatformStocks(List<String> warehouseCode, List<Integer> specIds) {
+        if (CollectionUtils.isEmpty(warehouseCode) || CollectionUtils.isEmpty(specIds)) {
             return new HashMap<>();
         }
 
-        List<String> keys=new ArrayList<>(warehouseCode.size()*specIds.size());
-        for(int j=0;j<specIds.size();j++){
-            for(int i=0;i<warehouseCode.size();i++){
-                keys.add(buildString("-", "platform",warehouseCode.get(i),specIds.get(j).toString()));
+        List<String> keys = new ArrayList<>(warehouseCode.size() * specIds.size());
+        for (int j = 0; j < specIds.size(); j++) {
+            for (int i = 0; i < warehouseCode.size(); i++) {
+                keys.add(buildString("-", "platform", warehouseCode.get(i), specIds.get(j).toString()));
             }
         }
         SharingJedisCluster redis = getRedis();
-        List<String> values= redis.hmget(STOCK_KEY, keys.toArray(new String[0]));
-        Map<Integer,Integer> resultMap=new HashMap<>();
-        for(int i=0;i<values.size();i+=warehouseCode.size()){
-            int loopSize=warehouseCode.size();
-            Integer count=0;
-            while(loopSize>0){
-                if(StringUtils.isBlank(values.get(i))){
+        List<String> values = redis.hmget(STOCK_KEY, keys.toArray(new String[0]));
+        Map<Integer, Integer> resultMap = new HashMap<>();
+        for (int i = 0; i < values.size(); i += warehouseCode.size()) {
+            int loopSize = warehouseCode.size();
+            Integer count = 0;
+            while (loopSize > 0) {
+                if (StringUtils.isBlank(values.get(i))) {
                     continue;
                 }
-                count+=Integer.valueOf(values.get(i));
+                count += Integer.valueOf(values.get(i));
             }
-            resultMap.put(specIds.get(i/warehouseCode.size()),count);
+            resultMap.put(specIds.get(i / warehouseCode.size()), count);
         }
         return resultMap;
     }
 
     /**
      * 更新平台库存
+     *
      * @param warehouseCode
      * @param specIdStockMap
      * @return
      */
-    public boolean upsertStocks(String warehouseCode,Map<Integer,Integer> specIdStockMap){
-        if(MapUtils.isEmpty(specIdStockMap)){
+    public boolean upsertStocks(String warehouseCode, Map<Integer, Integer> specIdStockMap) {
+        if (MapUtils.isEmpty(specIdStockMap)) {
             return true;
         }
 
-        Map<String,String> setMap = new LinkedHashMap<>();
+        Map<String, String> setMap = new LinkedHashMap<>();
         if (null != specIdStockMap) {
-            for (Map.Entry<Integer,Integer> entry : specIdStockMap.entrySet()){
-                setMap.put(buildString("-", "platform",warehouseCode,entry.getKey().toString()), entry.getValue().toString());
+            for (Map.Entry<Integer, Integer> entry : specIdStockMap.entrySet()) {
+                setMap.put(buildString("-", "platform", warehouseCode, entry.getKey().toString()), entry.getValue().toString());
             }
         }
         SharingJedisCluster redis = getRedis();
-        String result=redis.hmset(STOCK_KEY,setMap);
+        String result = redis.hmset(STOCK_KEY, setMap);
         return "OK".equalsIgnoreCase(result);
     }
 
     /**
      * 批量查询渠道库存
+     *
      * @param specIds
      * @param appCode
      * @return
      */
     public Map<Integer, Integer> findAppStocks(List<Integer> specIds, String appCode) {
         SharingJedisCluster redis = getRedis();
-        String[] keys=new String[specIds.size()];
-        for (int i=0;i<specIds.size();i++){
-            keys[i]=buildString("-", specIds.get(i).toString(), appCode);
+        String[] keys = new String[specIds.size()];
+        for (int i = 0; i < specIds.size(); i++) {
+            keys[i] = buildString("-", specIds.get(i).toString(), appCode);
         }
-        List<String> values= redis.hmget(STOCK_KEY, keys);
-        Map<Integer,Integer> resultMap=new HashMap<>();
-        for (int i=0;i<specIds.size();i++){
-            resultMap.put(specIds.get(i),values.get(i)==null?0:Integer.valueOf(values.get(i)));
+        List<String> values = redis.hmget(STOCK_KEY, keys);
+        Map<Integer, Integer> resultMap = new HashMap<>();
+        for (int i = 0; i < specIds.size(); i++) {
+            int stock = 0;
+            if (values.get(i) != null) {
+                stock = Integer.valueOf(values.get(i));
+            }
+            resultMap.put(specIds.get(i), stock);
         }
         return resultMap;
     }
@@ -201,11 +209,11 @@ public class StockRedisDao extends BaseRedisDao {
      *
      * @return
      */
-    public int unlockStock(String appCode, Map<Integer,Integer> specIdStockMap
-            ,Map<Integer,Integer> activityStockMap){
+    public int unlockStock(String appCode, Map<Integer, Integer> specIdStockMap
+            , Map<Integer, Integer> activityStockMap) {
         SharingJedisCluster redis = getRedis();
         //TODO 释放被锁商品库存
-        redis.unlockStock(appCode,null);
+        redis.unlockStock(appCode, null);
         return 0;
     }
 }
