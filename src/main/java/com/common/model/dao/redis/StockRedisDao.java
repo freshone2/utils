@@ -172,7 +172,7 @@ public class StockRedisDao extends BaseRedisDao {
         List<String> values= redis.hmget(STOCK_KEY, keys);
         Map<Integer,Integer> resultMap=new HashMap<>();
         for (int i=0;i<specIds.size();i++){
-            resultMap.put(specIds.get(i),Integer.valueOf(values.get(i)));
+            resultMap.put(specIds.get(i),values.get(i)==null?0:Integer.valueOf(values.get(i)));
         }
         return resultMap;
     }
