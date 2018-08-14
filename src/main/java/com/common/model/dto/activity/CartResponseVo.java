@@ -14,6 +14,7 @@ import java.util.List;
 public class CartResponseVo {
     private Integer commodityId;
     private Integer specificationId;
+    private Integer no;
     private String commodityName;
     private String specificationName;
     private String icon;
@@ -191,6 +192,14 @@ public class CartResponseVo {
 
     public void setSpread(Double spread) {
         this.spread = spread;
+    }
+
+    public Integer getNo() {
+        return no;
+    }
+
+    public void setNo(Integer no) {
+        this.no = no;
     }
 
     @Override
