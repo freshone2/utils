@@ -27,6 +27,7 @@ public class ChildOrderBo extends BaseOrderBo {
     private String goodNo;
     private Integer specId;
     private String specNo;
+    private String store;
     private OrderActivityBo platform;
     private OrderActivityBo coupon;
     private OrderActivityBo specialActivity;
@@ -175,6 +176,14 @@ public class ChildOrderBo extends BaseOrderBo {
 
     public void setVirtualCoin(OrderVirtualCoinBo virtualCoin) {
         this.virtualCoin = virtualCoin;
+    }
+
+    public String getStore() {
+        return store;
+    }
+
+    public void setStore(String store) {
+        this.store = store;
     }
 
     @Override
