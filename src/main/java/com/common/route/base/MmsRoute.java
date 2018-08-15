@@ -4,6 +4,8 @@ import com.common.model.bo.coupon.CouponDTO;
 import com.common.model.dto.ResultDTO;
 import com.common.model.dto.promotion.IntegralPublishDTO;
 import com.common.model.dto.task.TaskDTO;
+import com.peacock.feather.support.ResponseWrapper;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -173,5 +175,15 @@ public interface MmsRoute {
      */
     @RequestMapping(value = "/v1/preSale/stage",method = RequestMethod.PUT)
     ResultDTO updatePreSaleStage(@RequestHeader(value = "requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
+    
+	/**
+	 * 更新加价购活动状态
+	 * 
+	 * @param requestId
+	 * @param taskDTO
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/priceMarkupActivity/status", method = RequestMethod.PUT)
+	ResponseWrapper<?> updatePriceMarkupActivityStatus(@RequestHeader(value = "requestId") String requestId, @RequestBody TaskDTO<String> taskDTO);
 
 }
