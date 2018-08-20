@@ -32,6 +32,7 @@ public class CartResponseVo {
     private Boolean finishPlatformActivity = false;
     private PlatformContentBo platformContentBo;
     private Double spread;
+    private Integer deliveryMethod;
     private List<CommoditySpecificationBo> prices;
 
     public Integer getInventory() {
@@ -200,6 +201,14 @@ public class CartResponseVo {
 
     public void setNo(String no) {
         this.no = no;
+    }
+
+    public Integer getDeliveryMethod() {
+        return deliveryMethod;
+    }
+
+    public void setDeliveryMethod(Integer deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
     }
 
     @Override
