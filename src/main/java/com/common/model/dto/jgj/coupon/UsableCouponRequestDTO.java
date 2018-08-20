@@ -13,7 +13,7 @@ public class UsableCouponRequestDTO extends RequestDTO {
 
     private String orderAmount;
 
-    private String cv;
+    private String cv="4220";
 
     private List<OrderInfoDTO> orderInfo;
 }

@@ -14,36 +14,36 @@ public interface JgjRoute {
 
     @PostMapping("/v1/coupon/queryUsableCoupons")
     ResponseWrapper<?> queryUsableCoupons(
-            @RequestHeader(value = "requestId",required =false)String requestId,
+            @RequestHeader(value = "requestId")String requestId,
             @RequestBody UsableCouponRequestDTO usableCouponRequestDTO);
 
     @PostMapping("/v1/coupon/lockCoupon")
     ResponseWrapper<?> lockCoupon(
-            @RequestHeader(value = "requestId",required =false)String requestId,
+            @RequestHeader(value = "requestId")String requestId,
             @RequestBody LockCouponRequestDTO lockCouponRequestDTO);
 
     @PostMapping("/v1/coupon/checkCoupon")
     ResponseWrapper<?> checkCoupon(
-            @RequestHeader(value = "requestId",required =false)String requestId,
+            @RequestHeader(value = "requestId")String requestId,
             @RequestBody CheckCouponRequestDTO checkCouponRequestDTO);
 
     @PostMapping("/v1/coupon/haveAvailableCoupons")
     ResponseWrapper<HaveAvailableCouponsResponseDTO> haveAvailableCoupons(
-            @RequestHeader(value = "requestId",required =false)String requestId,
+            @RequestHeader(value = "requestId")String requestId,
             @RequestBody HaveAvailableCouponsRequestDTO haveAvailableCouponsRequestDTO);
 
     @PostMapping("/v1/coupon/updateCouponsStatusForESG")
     ResponseWrapper<?> updateCouponsStatusForESG(
-            @RequestHeader(value = "requestId",required =false)String requestId,
+            @RequestHeader(value = "requestId")String requestId,
             @RequestBody UpdateCouponsStatusRequestDTO updateCouponsStatusRequestDTO);
 
     @PostMapping("/v1/coupon/distributeCouponsForEsg")
     ResponseWrapper<DistributeCouponsResponseDTO> DistributeCouponsForEsg(
-            @RequestHeader(value = "requestId",required =false)String requestId,
+            @RequestHeader(value = "requestId")String requestId,
             @RequestBody DistributeCouponsRequestDTO distributeCouponsRequestDTO);
 
     @PostMapping("/v1/product/receiveLifeProductInfo")
     ResponseWrapper<?> receiveLifeProductInfo(
-            @RequestHeader(value = "requestId",required =false)String requestId,
+            @RequestHeader(value = "requestId")String requestId,
             @RequestBody ProductInfoRequestDTO productInfoRequestDTO);
 }
