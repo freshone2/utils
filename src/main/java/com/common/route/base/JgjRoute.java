@@ -46,4 +46,8 @@ public interface JgjRoute {
     ResponseWrapper<?> receiveLifeProductInfo(
             @RequestHeader(value = "requestId")String requestId,
             @RequestBody ProductInfoRequestDTO productInfoRequestDTO);
+
+    @PostMapping("/v1/common/accessToken")
+    ResponseWrapper<String> getAccessToken(
+            @RequestHeader(value = "requestId")String requestId);
 }
