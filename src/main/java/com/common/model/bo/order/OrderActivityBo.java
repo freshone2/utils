@@ -11,6 +11,7 @@ public class OrderActivityBo {
     private Integer couponId;
     private String activityTitle;
     private Double price;
+    private String jgjCouponId;
 
     public OrderActivityBo() {
     }
@@ -58,6 +59,14 @@ public class OrderActivityBo {
         this.price = price;
     }
 
+    public String getJgjCouponId() {
+        return jgjCouponId;
+    }
+
+    public void setJgjCouponId(String jgjCouponId) {
+        this.jgjCouponId = jgjCouponId;
+    }
+
     @Override
     public String toString() {
         return "OrderActivityBo{" +
@@ -65,6 +74,7 @@ public class OrderActivityBo {
                 ", couponId=" + couponId +
                 ", activityTitle='" + activityTitle + '\'' +
                 ", price=" + price +
+                ", jgjCouponId='" + jgjCouponId + '\'' +
                 '}';
     }
 }
