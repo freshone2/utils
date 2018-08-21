@@ -13,41 +13,41 @@ public interface JgjRoute {
     ResultDTO syncOrderToJgj(@RequestParam("orderId") String orderId);
 
     @PostMapping("/v1/coupon/queryUsableCoupons")
-    ResponseWrapper<?> queryUsableCoupons(
+    ResultDTO<?> queryUsableCoupons(
             @RequestHeader(value = "requestId")String requestId,
             @RequestBody UsableCouponRequestDTO usableCouponRequestDTO);
 
     @PostMapping("/v1/coupon/lockCoupon")
-    ResponseWrapper<?> lockCoupon(
+    ResultDTO<?> lockCoupon(
             @RequestHeader(value = "requestId")String requestId,
             @RequestBody LockCouponRequestDTO lockCouponRequestDTO);
 
     @PostMapping("/v1/coupon/checkCoupon")
-    ResponseWrapper<?> checkCoupon(
+    ResultDTO<?> checkCoupon(
             @RequestHeader(value = "requestId")String requestId,
             @RequestBody CheckCouponRequestDTO checkCouponRequestDTO);
 
     @PostMapping("/v1/coupon/haveAvailableCoupons")
-    ResponseWrapper<HaveAvailableCouponsResponseDTO> haveAvailableCoupons(
+    ResultDTO<HaveAvailableCouponsResponseDTO> haveAvailableCoupons(
             @RequestHeader(value = "requestId")String requestId,
             @RequestBody HaveAvailableCouponsRequestDTO haveAvailableCouponsRequestDTO);
 
     @PostMapping("/v1/coupon/updateCouponsStatusForESG")
-    ResponseWrapper<?> updateCouponsStatusForESG(
+    ResultDTO<?> updateCouponsStatusForESG(
             @RequestHeader(value = "requestId")String requestId,
             @RequestBody UpdateCouponsStatusRequestDTO updateCouponsStatusRequestDTO);
 
     @PostMapping("/v1/coupon/distributeCouponsForEsg")
-    ResponseWrapper<DistributeCouponsResponseDTO> DistributeCouponsForEsg(
+    ResultDTO<DistributeCouponsResponseDTO> DistributeCouponsForEsg(
             @RequestHeader(value = "requestId")String requestId,
             @RequestBody DistributeCouponsRequestDTO distributeCouponsRequestDTO);
 
     @PostMapping("/v1/product/receiveLifeProductInfo")
-    ResponseWrapper<?> receiveLifeProductInfo(
+    ResultDTO<?> receiveLifeProductInfo(
             @RequestHeader(value = "requestId")String requestId,
             @RequestBody ProductInfoRequestDTO productInfoRequestDTO);
 
     @PostMapping("/v1/common/accessToken")
-    ResponseWrapper<String> getAccessToken(
+    ResultDTO<String> getAccessToken(
             @RequestHeader(value = "requestId")String requestId);
 }
