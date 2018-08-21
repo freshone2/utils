@@ -9,6 +9,7 @@ package com.common.model.bo.coupon;
 public class UserCouponBo {
     private Integer couponId;
     private Integer activityCouponId;
+    private String jgjCouponId;
     private ActivityCouponContentBo couponContentBo;
 
     public Integer getCouponId() {
@@ -35,11 +36,20 @@ public class UserCouponBo {
         this.couponContentBo = couponContentBo;
     }
 
+    public String getJgjCouponId() {
+        return jgjCouponId;
+    }
+
+    public void setJgjCouponId(String jgjCouponId) {
+        this.jgjCouponId = jgjCouponId;
+    }
+
     @Override
     public String toString() {
         return "UserCouponBo{" +
                 "couponId=" + couponId +
                 ", activityCouponId=" + activityCouponId +
+                ", jgjCouponId='" + jgjCouponId + '\'' +
                 ", couponContentBo=" + couponContentBo +
                 '}';
     }
