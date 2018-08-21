@@ -3,7 +3,6 @@ package com.common.route.base;
 import com.common.model.dto.ResultDTO;
 import com.common.model.dto.jgj.coupon.*;
 import com.common.model.dto.jgj.product.ProductInfoRequestDTO;
-import com.peacock.feather.support.ResponseWrapper;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/jgj")
