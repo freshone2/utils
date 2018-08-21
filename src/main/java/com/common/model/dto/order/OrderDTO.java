@@ -45,6 +45,8 @@ public class OrderDTO {
 
     private String icon;
 
+    private String merchantCode;
+
     public String getIcon() {
         return icon;
     }
@@ -173,6 +175,14 @@ public class OrderDTO {
         this.virtualCoin = virtualCoin;
     }
 
+    public String getMerchantCode() {
+        return merchantCode;
+    }
+
+    public void setMerchantCode(String merchantCode) {
+        this.merchantCode = merchantCode;
+    }
+
     @Override
     public String toString() {
         return "OrderDTO{" +
@@ -190,6 +200,9 @@ public class OrderDTO {
                 ", contact=" + contact +
                 ", buyerRemark='" + buyerRemark + '\'' +
                 ", virtualCoin=" + virtualCoin +
+                ", logisticsCode='" + logisticsCode + '\'' +
+                ", icon='" + icon + '\'' +
+                ", merchantCode='" + merchantCode + '\'' +
                 '}';
     }
 }
