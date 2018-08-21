@@ -10,7 +10,7 @@ public class OrderInfoDTO {
 
     private String commodityAmount;
 
-    private String commodityNum;
+    private Integer commodityNum;
 
     private String commodityCode;
 

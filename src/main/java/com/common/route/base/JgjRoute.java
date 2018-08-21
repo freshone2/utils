@@ -13,7 +13,7 @@ public interface JgjRoute {
     ResultDTO syncOrderToJgj(@RequestParam("orderId") String orderId);
 
     @PostMapping("/v1/coupon/queryUsableCoupons")
-    ResultDTO<?> queryUsableCoupons(
+    ResultDTO<QueryUsableCouponsResponseDTO> queryUsableCoupons(
             @RequestHeader(value = "requestId")String requestId,
             @RequestBody UsableCouponRequestDTO usableCouponRequestDTO);
 

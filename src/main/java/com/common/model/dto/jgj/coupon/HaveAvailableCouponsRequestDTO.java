@@ -9,8 +9,6 @@ import lombok.Data;
 @Data
 public class HaveAvailableCouponsRequestDTO extends RequestDTO {
 
-    private String merchandiseCode;
-
-    private String activityId;
+    private HaveAvailableCouponsQueryParamsDTO queryParams;
 
 }
