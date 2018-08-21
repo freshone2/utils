@@ -50,6 +50,9 @@ public class OrderBo extends BaseOrderBo {
     private OrderActivityBo coupon;
     private OrderActivityBo specialActivity;
     private int userDeleted = 0;
+    private String merchantCode;
+    private String agentNo;
+    private String commission;
 
     public String get_id() {
         return _id;
@@ -331,6 +334,30 @@ public class OrderBo extends BaseOrderBo {
         this.userDeleted = userDeleted;
     }
 
+    public String getMerchantCode() {
+        return merchantCode;
+    }
+
+    public void setMerchantCode(String merchantCode) {
+        this.merchantCode = merchantCode;
+    }
+
+    public String getAgentNo() {
+        return agentNo;
+    }
+
+    public void setAgentNo(String agentNo) {
+        this.agentNo = agentNo;
+    }
+
+    public String getCommission() {
+        return commission;
+    }
+
+    public void setCommission(String commission) {
+        this.commission = commission;
+    }
+
     @Override
     public String toString() {
         return "OrderBo{" +
@@ -368,6 +395,10 @@ public class OrderBo extends BaseOrderBo {
                 ", platform=" + platform +
                 ", coupon=" + coupon +
                 ", specialActivity=" + specialActivity +
-                '}';
+                ", userDeleted=" + userDeleted +
+                ", merchantCode='" + merchantCode + '\'' +
+                ", agentNo='" + agentNo + '\'' +
+                ", commission='" + commission + '\'' +
+                "} " + super.toString();
     }
 }
