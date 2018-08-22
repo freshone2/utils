@@ -4,6 +4,7 @@ import com.common.model.bo.coupon.CouponDTO;
 import com.common.model.dto.ResultDTO;
 import com.common.model.dto.promotion.IntegralPublishDTO;
 import com.common.model.dto.task.TaskDTO;
+import com.google.gson.JsonObject;
 import com.peacock.feather.support.ResponseWrapper;
 
 import org.springframework.web.bind.annotation.*;
@@ -185,5 +186,8 @@ public interface MmsRoute {
 	 */
 	@RequestMapping(value = "/v1/priceMarkupActivity/status", method = RequestMethod.PUT)
 	ResponseWrapper<?> updatePriceMarkupActivityStatus(@RequestHeader(value = "requestId") String requestId, @RequestBody TaskDTO<String> taskDTO);
+	
+	@RequestMapping(value = "/v1/commdity/CommoditySpec", method = RequestMethod.GET)
+	ResultDTO findCommoditySpecBySpecNo(@RequestParam String appCode, @RequestParam String sepcNo);
 
 }
