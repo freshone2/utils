@@ -29,8 +29,6 @@ public class CommoditySpecificationBo {
 
     private String specificationImageUrl;
 
-    private String jgjAreaId;
-
     public String getSpecificationImageUrl() {
         return specificationImageUrl;
     }
@@ -135,14 +133,6 @@ public class CommoditySpecificationBo {
         this.syncStock = syncStock;
     }
 
-    public String getJgjAreaId() {
-        return jgjAreaId;
-    }
-
-    public void setJgjAreaId(String jgjAreaId) {
-        this.jgjAreaId = jgjAreaId;
-    }
-
     @Override
     public String toString() {
         return "CommoditySpecificationBo{" +
@@ -159,7 +149,6 @@ public class CommoditySpecificationBo {
                 ", stockNo='" + stockNo + '\'' +
                 ", specificationName='" + specificationName + '\'' +
                 ", specificationImageUrl='" + specificationImageUrl + '\'' +
-                ", jgjAreaId='" + jgjAreaId + '\'' +
                 '}';
     }
 }
