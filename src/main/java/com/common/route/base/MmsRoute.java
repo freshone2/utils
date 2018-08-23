@@ -2,6 +2,7 @@ package com.common.route.base;
 
 import com.common.model.bo.coupon.CouponDTO;
 import com.common.model.dto.ResultDTO;
+import com.common.model.dto.commodity.CommoditySpecIdDTO;
 import com.common.model.dto.promotion.IntegralPublishDTO;
 import com.common.model.dto.task.TaskDTO;
 import com.google.gson.JsonObject;
@@ -188,6 +189,6 @@ public interface MmsRoute {
 	ResponseWrapper<?> updatePriceMarkupActivityStatus(@RequestHeader(value = "requestId") String requestId, @RequestBody TaskDTO<String> taskDTO);
 	
 	@RequestMapping(value = "/v1/commdity/CommoditySpec", method = RequestMethod.GET)
-	ResultDTO findCommoditySpecBySpecNo(@RequestParam("appCode") String appCode, @RequestParam("sepcNo") String sepcNo);
+	ResultDTO<CommoditySpecIdDTO> findCommoditySpecBySpecNo(@RequestParam("appCode") String appCode, @RequestParam("sepcNo") String sepcNo);
 
 }

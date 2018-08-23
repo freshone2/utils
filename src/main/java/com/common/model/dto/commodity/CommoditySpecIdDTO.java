@@ -1,7 +1,11 @@
 package com.common.model.dto.commodity;
 
-public class CommoditySpecIdDTO {
+import java.io.Serializable;
 
+public class CommoditySpecIdDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	private Integer specId;
 	private Integer commodityId;
 	private String specNo;
