@@ -10,6 +10,7 @@ public class UserCouponBo {
     private Integer couponId;
     private Integer activityCouponId;
     private String jgjCouponId;
+    private Integer jgjUsableCouponsNum;
     private ActivityCouponContentBo couponContentBo;
 
     public Integer getCouponId() {
@@ -44,12 +45,21 @@ public class UserCouponBo {
         this.jgjCouponId = jgjCouponId;
     }
 
+    public Integer getJgjUsableCouponsNum() {
+        return jgjUsableCouponsNum;
+    }
+
+    public void setJgjUsableCouponsNum(Integer jgjUsableCouponsNum) {
+        this.jgjUsableCouponsNum = jgjUsableCouponsNum;
+    }
+
     @Override
     public String toString() {
         return "UserCouponBo{" +
                 "couponId=" + couponId +
                 ", activityCouponId=" + activityCouponId +
                 ", jgjCouponId='" + jgjCouponId + '\'' +
+                ", jgjUsableCouponsNum=" + jgjUsableCouponsNum +
                 ", couponContentBo=" + couponContentBo +
                 '}';
     }
