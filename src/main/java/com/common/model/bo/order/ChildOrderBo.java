@@ -33,6 +33,7 @@ public class ChildOrderBo extends BaseOrderBo {
     private OrderActivityBo specialActivity;
     private OrderVirtualCoinBo virtualCoin;
     private CommodityBo relationGood;
+    private String commodityAmount;
 
     public String getGoodNo() {
         return goodNo;
@@ -186,30 +187,37 @@ public class ChildOrderBo extends BaseOrderBo {
         this.store = store;
     }
 
+    public String getCommodityAmount() {
+        return commodityAmount;
+    }
+
+    public void setCommodityAmount(String commodityAmount) {
+        this.commodityAmount = commodityAmount;
+    }
+
     @Override
     public String toString() {
         return "ChildOrderBo{" +
                 "goodName='" + goodName + '\'' +
                 ", unitPrice=" + unitPrice +
                 ", realPrice=" + realPrice +
+                ", unitIntegral=" + unitIntegral +
                 ", integral=" + integral +
                 ", unitBasePrice=" + unitBasePrice +
                 ", basePrice=" + basePrice +
                 ", num=" + num +
                 ", specName='" + specName + '\'' +
                 ", goodId=" + goodId +
+                ", goodNo='" + goodNo + '\'' +
                 ", specId=" + specId +
+                ", specNo='" + specNo + '\'' +
+                ", store='" + store + '\'' +
                 ", platform=" + platform +
                 ", coupon=" + coupon +
                 ", specialActivity=" + specialActivity +
-                ", id='" + id + '\'' +
-                ", createdAt=" + createdAt +
-                ", status=" + status +
-                ", displayStatus='" + displayStatus + '\'' +
-                ", adjustAmount=" + adjustAmount +
-                ", timeline=" + timeline +
-                ", icon='" + icon + '\'' +
-                ", refundNum=" + refundNum +
-                '}';
+                ", virtualCoin=" + virtualCoin +
+                ", relationGood=" + relationGood +
+                ", commodityAmount='" + commodityAmount + '\'' +
+                "} " + super.toString();
     }
 }
