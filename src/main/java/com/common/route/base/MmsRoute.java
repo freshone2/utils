@@ -189,6 +189,6 @@ public interface MmsRoute {
 	ResponseWrapper<?> updatePriceMarkupActivityStatus(@RequestHeader(value = "requestId") String requestId, @RequestBody TaskDTO<String> taskDTO);
 	
 	@RequestMapping(value = "/v1/commdity/CommoditySpec", method = RequestMethod.GET)
-	ResultDTO<CommoditySpecIdDTO> findCommoditySpecBySpecNo(@RequestParam("appCode") String appCode, @RequestParam("sepcNo") String sepcNo);
+	ResultDTO findCommoditySpecBySpecNo(@RequestParam("appCode") String appCode, @RequestParam("sepcNo") String sepcNo);
 
 }
