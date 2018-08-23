@@ -2,6 +2,7 @@ package com.common.route.base;
 
 import com.common.model.bo.coupon.CouponDTO;
 import com.common.model.dto.ResultDTO;
+import com.common.model.dto.commodity.CommoditySpecIdDTO;
 import com.common.model.dto.promotion.IntegralPublishDTO;
 import com.common.model.dto.task.TaskDTO;
 import com.google.gson.JsonObject;
