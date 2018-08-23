@@ -53,6 +53,7 @@ public class OrderBo extends BaseOrderBo {
     private String merchantCode;
     private String agentNo;
     private String commission;
+    private String orderAmount;
 
     public String get_id() {
         return _id;
@@ -358,6 +359,14 @@ public class OrderBo extends BaseOrderBo {
         this.commission = commission;
     }
 
+    public String getOrderAmount() {
+        return orderAmount;
+    }
+
+    public void setOrderAmount(String orderAmount) {
+        this.orderAmount = orderAmount;
+    }
+
     @Override
     public String toString() {
         return "OrderBo{" +
@@ -399,6 +408,7 @@ public class OrderBo extends BaseOrderBo {
                 ", merchantCode='" + merchantCode + '\'' +
                 ", agentNo='" + agentNo + '\'' +
                 ", commission='" + commission + '\'' +
+                ", orderAmount='" + orderAmount + '\'' +
                 "} " + super.toString();
     }
 }
