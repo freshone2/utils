@@ -13,6 +13,7 @@ public class ContactBo {
     private String city;
     private String county;
     private String detail;
+    private String address;
     private String receiverZip;
     private Integer sex;
 
@@ -80,6 +81,14 @@ public class ContactBo {
         this.receiverZip = receiverZip;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "ContactBo{" +
@@ -89,7 +98,9 @@ public class ContactBo {
                 ", city='" + city + '\'' +
                 ", county='" + county + '\'' +
                 ", detail='" + detail + '\'' +
+                ", address='" + address + '\'' +
                 ", receiverZip='" + receiverZip + '\'' +
+                ", sex=" + sex +
                 '}';
     }
 }
