@@ -1,16 +1,19 @@
 package com.common.route.base;
 
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.common.model.bo.coupon.CouponDTO;
 import com.common.model.dto.ResultDTO;
 import com.common.model.dto.commodity.CommoditySpecIdDTO;
 import com.common.model.dto.promotion.IntegralPublishDTO;
 import com.common.model.dto.task.TaskDTO;
-import com.google.gson.JsonObject;
 import com.peacock.feather.support.ResponseWrapper;
-
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * 内部调用接口
@@ -189,6 +192,6 @@ public interface MmsRoute {
 	ResponseWrapper<?> updatePriceMarkupActivityStatus(@RequestHeader(value = "requestId") String requestId, @RequestBody TaskDTO<String> taskDTO);
 	
 	@RequestMapping(value = "/v1/commdity/CommoditySpec", method = RequestMethod.GET)
-	ResultDTO findCommoditySpecBySpecNo(@RequestParam("appCode") String appCode, @RequestParam("sepcNo") String sepcNo);
+	ResultDTO<CommoditySpecIdDTO> findCommoditySpecBySpecNo(@RequestParam("appCode") String appCode, @RequestParam("sepcNo") String sepcNo);
 
 }
