@@ -37,7 +37,7 @@ public interface JgjRoute {
             @RequestBody UpdateCouponsStatusRequestDTO updateCouponsStatusRequestDTO);
 
     @PostMapping("/v1/coupon/distributeCouponsForEsg")
-    ResultDTO<DistributeCouponsResponseDTO> DistributeCouponsForEsg(
+    ResultDTO<DistributeCouponsResponseDTO> distributeCouponsForEsg(
             @RequestHeader(value = "requestId")String requestId,
             @RequestBody DistributeCouponsRequestDTO distributeCouponsRequestDTO);
 

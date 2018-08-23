@@ -29,6 +29,10 @@ public class OrderDTO {
 
     private Integer couponId;
 
+    private String jgjCouponId;
+
+    private Double jgjDiscountAmount;
+
     private Integer platformId;
 
     private String userId;
@@ -44,6 +48,8 @@ public class OrderDTO {
     private String logisticsCode;
 
     private String icon;
+
+    private String merchantCode;
 
     public String getIcon() {
         return icon;
@@ -125,6 +131,22 @@ public class OrderDTO {
         this.couponId = couponId;
     }
 
+    public String getJgjCouponId() {
+        return jgjCouponId;
+    }
+
+    public void setJgjCouponId(String jgjCouponId) {
+        this.jgjCouponId = jgjCouponId;
+    }
+
+    public Double getJgjDiscountAmount() {
+        return jgjDiscountAmount;
+    }
+
+    public void setJgjDiscountAmount(Double jgjDiscountAmount) {
+        this.jgjDiscountAmount = jgjDiscountAmount;
+    }
+
     public Integer getPlatformId() {
         return platformId;
     }
@@ -173,6 +195,14 @@ public class OrderDTO {
         this.virtualCoin = virtualCoin;
     }
 
+    public String getMerchantCode() {
+        return merchantCode;
+    }
+
+    public void setMerchantCode(String merchantCode) {
+        this.merchantCode = merchantCode;
+    }
+
     @Override
     public String toString() {
         return "OrderDTO{" +
@@ -184,12 +214,17 @@ public class OrderDTO {
                 ", invoice=" + invoice +
                 ", childOrders=" + childOrders +
                 ", couponId=" + couponId +
+                ", jgjCouponId='" + jgjCouponId + '\'' +
+                ", jgjDiscountAmount=" + jgjDiscountAmount +
                 ", platformId=" + platformId +
                 ", userId='" + userId + '\'' +
                 ", userPhone='" + userPhone + '\'' +
                 ", contact=" + contact +
                 ", buyerRemark='" + buyerRemark + '\'' +
                 ", virtualCoin=" + virtualCoin +
+                ", logisticsCode='" + logisticsCode + '\'' +
+                ", icon='" + icon + '\'' +
+                ", merchantCode='" + merchantCode + '\'' +
                 '}';
     }
 }
