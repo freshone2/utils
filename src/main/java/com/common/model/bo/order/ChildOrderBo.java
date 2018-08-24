@@ -28,6 +28,8 @@ public class ChildOrderBo extends BaseOrderBo {
     private Integer specId;
     private String specNo;
     private String store;
+    //店铺code
+    private String brandCode;
     private OrderActivityBo platform;
     private OrderActivityBo coupon;
     private OrderActivityBo specialActivity;
@@ -193,6 +195,14 @@ public class ChildOrderBo extends BaseOrderBo {
 
     public void setCommodityAmount(String commodityAmount) {
         this.commodityAmount = commodityAmount;
+    }
+
+    public String getBrandCode() {
+        return brandCode;
+    }
+
+    public void setBrandCode(String brandCode) {
+        this.brandCode = brandCode;
     }
 
     @Override
