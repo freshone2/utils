@@ -194,4 +194,12 @@ public interface MmsRoute {
 	@RequestMapping(value = "/v1/commdity/CommoditySpec", method = RequestMethod.GET)
 	ResultDTO<CommoditySpecIdDTO> findCommoditySpecBySpecNo(@RequestParam("appCode") String appCode, @RequestParam("sepcNo") String sepcNo);
 
+    /**
+     * 更新金管家专区优惠券活动状态
+     * @param requestId
+     * @param taskDTO
+     * @return
+     */
+    @RequestMapping(value = "/v1/jgjAreaActivity/status",method = RequestMethod.PUT)
+    ResultDTO updateJgjAreaActivityStatus(@RequestHeader(value = "requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
 }
