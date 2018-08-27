@@ -13,7 +13,7 @@ public class GetUserCouponListRequestDTO extends RequestDTO{
 
     private String pageSize;
 
-    private String pagination;
+    private String pageIndex;
 
     private String couponsStatus;
 
