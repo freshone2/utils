@@ -50,7 +50,7 @@ public interface JgjRoute {
     ResultDTO<String> getAccessToken(
             @RequestHeader(value = "requestId")String requestId);
 
-    @PostMapping("/getUserCouponList")
+    @PostMapping("/v1/coupon/getUserCouponList")
     ResultDTO<GetUserCouponListResponseDTO> getUserCouponList(
             @RequestHeader(value = "requestId")String requestId,
             @RequestBody GetUserCouponListRequestDTO distributeCouponsRequestDTO);
