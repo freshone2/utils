@@ -1,5 +1,6 @@
 package com.common.model.dao.redis;
 
+import com.common.model.bo.cache.RedisCommodityBo;
 import com.common.model.bo.redis.JedisClusterPipeline;
 import com.common.model.bo.stock.AppStockUpsertBo;
 import org.apache.commons.collections.CollectionUtils;
@@ -215,5 +216,11 @@ public class StockRedisDao extends BaseRedisDao {
         //TODO 释放被锁商品库存
         redis.unlockStock(appCode, null);
         return 0;
+    }
+
+    public boolean deductAppStockSingle(String appCode, Integer specId,Integer stock) {
+        SharingJedisCluster redis = getRedis();
+        redis.hincrBy(STOCK_KEY, buildString("-", specId.toString(), appCode), -stock);
+        return true;
     }
 }
