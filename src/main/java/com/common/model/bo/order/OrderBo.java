@@ -2,6 +2,8 @@ package com.common.model.bo.order;
 
 import org.springframework.data.annotation.Id;
 
+import com.common.config.conf.OrderGroupTypeEnum;
+
 import java.util.List;
 
 /**
@@ -54,6 +56,13 @@ public class OrderBo extends BaseOrderBo {
     private String agentNo;
     private String commission;
     private String orderAmount;
+    
+    /**
+     * 拼团订单类型
+     * {@link OrderGroupTypeEnum}
+     * 
+     * */
+    private String groupType;
 
     public String get_id() {
         return _id;
@@ -367,7 +376,15 @@ public class OrderBo extends BaseOrderBo {
         this.orderAmount = orderAmount;
     }
 
-    @Override
+    public String getGroupType() {
+		return groupType;
+	}
+
+	public void setGroupType(String groupType) {
+		this.groupType = groupType;
+	}
+
+	@Override
     public String toString() {
         return "OrderBo{" +
                 "_id='" + _id + '\'' +
