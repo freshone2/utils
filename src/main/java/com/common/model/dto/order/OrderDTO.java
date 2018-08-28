@@ -51,6 +51,8 @@ public class OrderDTO {
 
     private String merchantCode;
 
+    private String agentNo;
+
     public String getIcon() {
         return icon;
     }
@@ -203,6 +205,14 @@ public class OrderDTO {
         this.merchantCode = merchantCode;
     }
 
+    public String getAgentNo() {
+        return agentNo;
+    }
+
+    public void setAgentNo(String agentNo) {
+        this.agentNo = agentNo;
+    }
+
     @Override
     public String toString() {
         return "OrderDTO{" +
@@ -225,6 +235,7 @@ public class OrderDTO {
                 ", logisticsCode='" + logisticsCode + '\'' +
                 ", icon='" + icon + '\'' +
                 ", merchantCode='" + merchantCode + '\'' +
+                ", agentNo='" + agentNo + '\'' +
                 '}';
     }
 }

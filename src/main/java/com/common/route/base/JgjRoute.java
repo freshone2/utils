@@ -49,4 +49,9 @@ public interface JgjRoute {
     @PostMapping("/v1/common/accessToken")
     ResultDTO<String> getAccessToken(
             @RequestHeader(value = "requestId")String requestId);
+
+    @PostMapping("/v1/coupon/getUserCouponList")
+    ResultDTO<GetUserCouponListResponseDTO> getUserCouponList(
+            @RequestHeader(value = "requestId")String requestId,
+            @RequestBody GetUserCouponListRequestDTO distributeCouponsRequestDTO);
 }
