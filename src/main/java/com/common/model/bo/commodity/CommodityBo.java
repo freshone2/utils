@@ -85,6 +85,8 @@ public class CommodityBo {
 
     private Integer deliveryMethod;
 
+    private String brandCode;
+
     private List<RelationCommodityBo> commoditys;
 
     private List<CommodityDetailBo> commodityDetails;
@@ -463,6 +465,14 @@ public class CommodityBo {
         this.deliveryMethod = deliveryMethod;
     }
 
+    public String getBrandCode() {
+        return brandCode;
+    }
+
+    public void setBrandCode(String brandCode) {
+        this.brandCode = brandCode;
+    }
+
     @Override
     public String toString() {
         return "CommodityBo{" +
@@ -507,6 +517,7 @@ public class CommodityBo {
                 ", prepackNum=" + prepackNum +
                 ", commissionRate=" + commissionRate +
                 ", deliveryMethod=" + deliveryMethod +
+                ", brandCode='" + brandCode + '\'' +
                 ", commoditys=" + commoditys +
                 ", commodityDetails=" + commodityDetails +
                 ", commodityImgs=" + commodityImgs +
