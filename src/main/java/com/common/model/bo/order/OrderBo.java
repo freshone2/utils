@@ -11,7 +11,6 @@ import java.util.List;
  * @date: 2018/3/27 下午2:47
  */
 public class OrderBo extends BaseOrderBo {
-
     @Id
     private String _id;
     private String platformCode;
