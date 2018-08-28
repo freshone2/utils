@@ -189,9 +189,27 @@ public interface MmsRoute {
 	 * @return
 	 */
 	@RequestMapping(value = "/v1/priceMarkupActivity/status", method = RequestMethod.PUT)
-	ResponseWrapper<?> updatePriceMarkupActivityStatus(@RequestHeader(value = "requestId") String requestId, @RequestBody TaskDTO<String> taskDTO);
+	ResultDTO<?> updatePriceMarkupActivityStatus(@RequestHeader(value = "requestId") String requestId, @RequestBody TaskDTO<String> taskDTO);
 	
 	@RequestMapping(value = "/v1/commdity/CommoditySpec", method = RequestMethod.GET)
 	ResultDTO<CommoditySpecIdDTO> findCommoditySpecBySpecNo(@RequestParam("appCode") String appCode, @RequestParam("sepcNo") String sepcNo);
 
+    /**
+     * 更新金管家专区优惠券活动状态
+     * @param requestId
+     * @param taskDTO
+     * @return
+     */
+    @RequestMapping(value = "/v1/jgjAreaActivity/status",method = RequestMethod.PUT)
+    ResultDTO updateJgjAreaActivityStatus(@RequestHeader(value = "requestId")String requestId,@RequestBody TaskDTO<String> taskDTO);
+    
+    /**
+	 * 更新机构专区活动状态
+	 * 
+	 * @param requestId
+	 * @param taskDTO
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/organizationRegionActivity/status", method = RequestMethod.PUT)
+	ResultDTO<?> updateOrganizationRegionActivityStatus(@RequestHeader(value = "requestId") String requestId, @RequestBody TaskDTO<String> taskDTO);
 }
