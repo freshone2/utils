@@ -224,4 +224,11 @@ public class StockRedisDao extends BaseRedisDao {
         redis.hincrBy(this.buildString(":", new String[]{"commodity", appCode, commodityId.toString()}), "purchasesCount", (long)stock);
         return true;
     }
+
+    public boolean increaseAppStockSingle(String appCode,Integer commodityId ,Integer specId,Integer stock) {
+        SharingJedisCluster redis = getRedis();
+        redis.hincrBy(STOCK_KEY, buildString("-", specId.toString(), appCode), stock);
+        redis.hincrBy(this.buildString(":", new String[]{"commodity", appCode, commodityId.toString()}), "purchasesCount", -(long)stock);
+        return true;
+    }
 }
