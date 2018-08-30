@@ -34,6 +34,12 @@
 
     <!--引入springboot稳定版 framework4.3.4-->
     <dependencies>
+    
+    	<dependency>
+    		<groupId>pecker</groupId>
+			<artifactId>oto_saas_model</artifactId>
+			<version>4.0.0-SNAPSHOT</version>
+    	</dependency>
 
         <!--配置数据库连接，稳定版-->
         <dependency>
@@ -141,6 +147,18 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        
+        <!-- swagger -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.6.1</version>
+		</dependency>
     </dependencies>
 
     <dependencyManagement>
