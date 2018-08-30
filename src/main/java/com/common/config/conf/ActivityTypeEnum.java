@@ -8,7 +8,10 @@ package com.common.config.conf;
  */
 public enum  ActivityTypeEnum {
     COUPON("coupon"),
-    PLATFORM("platform")
+    PLATFORM("platform"),
+    PRICE_MARKUP("priceMarkup"),
+    ORG_REGION("orgRegion"),
+    PRESALE("presale")
     ;
 
     public final String CODE;
